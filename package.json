@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "nx run-many --target=build --all"
+    "build": "nx run-many --target=build --all",
+    "prisma": "nx run-many --target=prisma --projects=banbot"
   },
   "keywords": [],
   "author": "",
