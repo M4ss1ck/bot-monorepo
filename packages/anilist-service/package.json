@@ -2,7 +2,7 @@
   "name": "anilist-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "start": "tsc -p ./tsconfig.json && node -r dotenv/config ./dist/index.js",
     "build": "tsc -p ./tsconfig.json"
