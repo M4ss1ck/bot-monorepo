@@ -28,4 +28,58 @@ commands.command(['myanime', 'myanimes'], async (ctx) => {
     }
 })
 
+commands.command('save', async ctx => {
+    const regex = /^\/save (\d+) (\d+) (.+)([\r\n\u0085\u2028\u2029]+(.+)?)?/i
+    if (regex.test(ctx.message.text)) {
+        try {
+            const matches = ctx.message.text.match(regex)
+            if (matches) {
+                const season = matches[1]
+                const episode = matches[2]
+                const name = matches[3]
+                const note = matches[5] ?? ''
+
+                await prisma.anime
+                    .upsert({
+                        where: {
+                            name_userId: {
+                                name: name.trim(),
+                                userId: ctx.from.id.toString()
+                            }
+                        },
+                        create: {
+                            name: name.trim(),
+                            season: parseInt(season),
+                            episode: parseInt(episode),
+                            note,
+                            user: {
+                                connectOrCreate: {
+                                    where: {
+                                        id: ctx.from.id.toString(),
+                                    },
+                                    create: {
+                                        id: ctx.from.id.toString(),
+                                    }
+                                }
+                            }
+                        },
+                        update: {
+                            season: parseInt(season),
+                            episode: parseInt(episode),
+                            note,
+                        }
+                    })
+                    .then(() => ctx.reply('Done'))
+                    .catch((e) => {
+                        console.log(e)
+                        ctx.reply('Error creating/updating that record')
+                    })
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+})
+
 export default commands
