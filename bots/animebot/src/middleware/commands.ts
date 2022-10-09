@@ -5,6 +5,12 @@ import { padTo2Digits } from "../utils/index.js"
 
 const commands = new Composer()
 
+commands.start(ctx => {
+    ctx.replyWithHTML(
+        `Welcome!\n\nI can help you to look for anime and other stuff\nType /help to see what I can do`
+    )
+})
+
 commands.help(ctx => {
     ctx.replyWithHTML(
         `Hi, ${ctx.from.first_name}!\nType <code>/save numberOfSeason numberOfEpisode nameOfAnime</code> to store anime in the database so you can remember where you left it <i>(very useful if you see a lot of anime)</i>.\n\nYou can also add a note using a new line.\nExample:\n<pre>/save 1 13 Spy X Family\nWatching with my gf</pre>\n\nThen using <code>/myanime</code> you can see the full list of anime you stored`
