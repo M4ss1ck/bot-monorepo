@@ -1,9 +1,12 @@
 import { Telegraf } from 'telegraf'
 import anime from './middleware/anime.js'
+import commands from './middleware/commands.js'
 
 const bot = new Telegraf(process.env.BOT_TOKEN ?? '')
 
-bot.use(anime)
+bot
+    .use(anime)
+    .use(commands)
 
 // Iniciar bot
 bot.launch()
