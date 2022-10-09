@@ -150,7 +150,7 @@ actions.action(/txt_\d+/, async ctx => {
             }
         })
 
-        const animelist = animes.map(anime => `${anime.name} [S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]`).join('\n')
+        const animelist = animes.map(anime => `${anime.name} [S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}] ${anime.note ?? ''}`).join('\n')
 
         await fs.writeFile(fileName, animelist)
 
