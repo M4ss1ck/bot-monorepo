@@ -5,6 +5,12 @@ import { padTo2Digits } from "../utils/index.js"
 
 const commands = new Composer()
 
+commands.help(ctx => {
+    ctx.replyWithHTML(
+        `Hi, ${ctx.from.first_name}!\nType <code>/save numberOfSeason numberOfEpisode nameOfAnime</code> to store anime in the database so you can remember where you left it <i>(very useful if you see a lot of anime)</i>.\n\nYou can also add a note using a new line.\nExample:\n<pre>/save 1 13 Spy X Family\nWatching with my gf</pre>\n\nThen using <code>/myanime</code> you can see the full list of anime you stored`
+    )
+})
+
 commands.command(['myanime', 'myanimes'], async (ctx) => {
     const animes = await prisma.anime.findMany({
         where: {
@@ -18,7 +24,8 @@ commands.command(['myanime', 'myanimes'], async (ctx) => {
         const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
         const keyboard = Markup.inlineKeyboard(
-            animes.map(anime => Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}`))
+            animes.map(anime => [Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}`)])
+
         )
 
         ctx.replyWithHTML(text, keyboard)
