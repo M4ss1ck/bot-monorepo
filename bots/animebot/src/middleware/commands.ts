@@ -29,7 +29,7 @@ commands.command(['myanime', 'myanimes'], async (ctx) => {
 
         const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
-        const buttons = animes.map(anime => [Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}`)])
+        const buttons = animes.map(anime => [Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}_${ctx.from.id.toString()}`)])
 
         buttons.push([
             Markup.button.callback('💾 Export .txt 💾', `txt_${ctx.from.id.toString()}`),
