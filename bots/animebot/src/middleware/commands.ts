@@ -29,10 +29,14 @@ commands.command(['myanime', 'myanimes'], async (ctx) => {
 
         const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
-        const keyboard = Markup.inlineKeyboard(
-            animes.map(anime => [Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}`)])
+        const buttons = animes.map(anime => [Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}`)])
 
-        )
+        buttons.push([
+            Markup.button.callback('Export .txt', `txt_${ctx.from.id.toString()}`),
+            Markup.button.callback('Export .csv', `csv_${ctx.from.id.toString()}`)
+        ])
+
+        const keyboard = Markup.inlineKeyboard(buttons)
 
         ctx.replyWithHTML(text, keyboard)
     }
