@@ -2,23 +2,23 @@ import axios from 'axios'
 
 export const ANILIST_URL = 'https://graphql.anilist.co'
 
-export async function genericQuery(query: string, variables = {}) {
-    const headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    }
+async function genericQuery(query: string, variables = {}) {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  }
 
-    const result = await axios.post(ANILIST_URL, {
-        query,
-        variables,
-        headers,
-    }).catch(err => console.log(err.message))
+  const result = await axios.post(ANILIST_URL, {
+    query,
+    variables,
+    headers,
+  }).catch(err => console.log(err.message))
 
-    return result?.data?.data
+  return result?.data?.data
 }
 
-export async function getAnimes(search: string, page = 1) {
-    const query = `
+async function getAnimes(search: string, page = 1) {
+  const query = `
             query ($page: Int, $perPage: Int, $search: String) {
                 Page(page: $page, perPage: $perPage) {
                 pageInfo {
@@ -39,18 +39,18 @@ export async function getAnimes(search: string, page = 1) {
             }
    `
 
-    const variables = {
-        search,
-        page,
-        perPage: 5,
-    }
+  const variables = {
+    search,
+    page,
+    perPage: 5,
+  }
 
-    const animes = await genericQuery(query, variables)
-    return animes
+  const animes = await genericQuery(query, variables)
+  return animes
 }
 
-export async function getAnime(id: number) {
-    const query = `
+async function getAnime(id: number) {
+  const query = `
         query ($id: Int) { # Define which variables will be used in the query (id)
             Media (id: $id, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)
             id
@@ -71,16 +71,16 @@ export async function getAnime(id: number) {
             }
         }
     `
-    const variables = {
-        id,
-    }
+  const variables = {
+    id,
+  }
 
-    const anime = await genericQuery(query, variables)
-    return anime
+  const anime = await genericQuery(query, variables)
+  return anime
 }
 
-export async function getCharacters(search: string, page = 1) {
-    const query = `
+async function getCharacters(search: string, page = 1) {
+  const query = `
     query ($page: Int, $perPage: Int, $search: String) {
       Page(page: $page, perPage: $perPage) {
         pageInfo {
@@ -116,18 +116,18 @@ export async function getCharacters(search: string, page = 1) {
     }
   `
 
-    const variables = {
-        search,
-        page,
-        perPage: 10,
-    }
+  const variables = {
+    search,
+    page,
+    perPage: 10,
+  }
 
-    const characters = await genericQuery(query, variables)
-    return characters
+  const characters = await genericQuery(query, variables)
+  return characters
 }
 
-export async function getIsBirthdayCharacters(page = 1) {
-    const query = `
+async function getIsBirthdayCharacters(page = 1) {
+  const query = `
     query ($page: Int, $perPage: Int, $search: String) {
       Page(page: $page, perPage: $perPage) {
         pageInfo {
@@ -163,17 +163,17 @@ export async function getIsBirthdayCharacters(page = 1) {
     }
   `
 
-    const variables = {
-        page,
-        perPage: 10,
-    }
+  const variables = {
+    page,
+    perPage: 10,
+  }
 
-    const bdChar = await genericQuery(query, variables)
-    return bdChar
+  const bdChar = await genericQuery(query, variables)
+  return bdChar
 }
 
-export async function getCharacter(id: number) {
-    const query = `query ($id: Int){
+async function getCharacter(id: number) {
+  const query = `query ($id: Int){
     Character(id: $id) {
         id
         name {
@@ -201,10 +201,12 @@ export async function getCharacter(id: number) {
       }
     }`
 
-    const variables = {
-        id,
-    }
+  const variables = {
+    id,
+  }
 
-    const character = await genericQuery(query, variables)
-    return character
+  const character = await genericQuery(query, variables)
+  return character
 }
+
+export { genericQuery, getAnime, getAnimes, getCharacter, getCharacters, getIsBirthdayCharacters }
