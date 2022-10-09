@@ -13,7 +13,7 @@ commands.start(ctx => {
 
 commands.help(ctx => {
     ctx.replyWithHTML(
-        `Hi, ${ctx.from.first_name}!\nType <code>/save numberOfSeason numberOfEpisode nameOfAnime</code> to store anime in the database so you can remember where you left it <i>(very useful if you see a lot of anime)</i>.\n\nYou can also add a note using a new line.\nExample:\n<pre>/save 1 13 Spy X Family\nWatching with my gf</pre>\n\nThen using <code>/myanime</code> you can see the full list of anime you stored`
+        `Hi, ${ctx.from.first_name}!\nType <code>/save numberOfSeason numberOfEpisode nameOfAnime</code> to store anime in the database so you can remember where you left it <i>(very useful if you see a lot of anime)</i>.\n\nYou can also add a note using a new line.\nExample:\n<pre>/save 1 13 Spy X Family\nWatching with my gf</pre>\n\nThen using <code>/myanime</code> you can see the full list of anime you stored\n\nThere are other commands to search in Anilist:\n/anime &lt;name of anime> - look for anime\n/animebd - returns a list of characters whose birthday is today\n/character &lt;name of character> - look for character`
     )
 })
 
