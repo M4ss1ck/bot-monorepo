@@ -33,7 +33,6 @@ commands.command(['myanime', 'myanimes'], async (ctx) => {
 
         buttons.push([
             Markup.button.callback('Export .txt', `txt_${ctx.from.id.toString()}`),
-            Markup.button.callback('Export .csv', `csv_${ctx.from.id.toString()}`)
         ])
 
         const keyboard = Markup.inlineKeyboard(buttons)
