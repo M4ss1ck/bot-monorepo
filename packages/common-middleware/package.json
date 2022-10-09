@@ -1,0 +1,21 @@
+{
+  "name": "common-middleware",
+  "version": "1.0.0",
+  "description": "Middleware to be used across bots",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "anilist-service": "workspace:*"
+  },
+  "peerDependencies": {
+    "telegraf": "^4.8.1"
+  },
+  "devDependencies": {
+    "typegram": "^4.0.0"
+  }
+}
