@@ -1,0 +1,33 @@
+{
+  "name": "animebot",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsc -p ./tsconfig.json && node -r dotenv/config ./dist/main.js",
+    "build": "tsc -p ./tsconfig.json",
+    "validate": "prisma validate",
+    "db-pull": "prisma db pull",
+    "generate": "prisma generate",
+    "format": "prisma format",
+    "prisma": "prisma generate && prisma db push",
+    "studio": "prisma studio",
+    "watch": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node -r dotenv/config ./dist/main.js\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^4.3.1",
+    "anilist-service": "workspace:*",
+    "dotenv": "^10.0.0",
+    "telegraf": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.18",
+    "prisma": "^4.3.1",
+    "tsc-watch": "^5.0.3"
+  }
+}
