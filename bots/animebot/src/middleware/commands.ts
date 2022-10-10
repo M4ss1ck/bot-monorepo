@@ -25,11 +25,15 @@ commands.command(['myanime', 'myanimes'], async (ctx) => {
     })
 
     if (animes.length > 0) {
-        const animelist = animes.map(anime => `${anime.name} [S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]`).join('\n')
+        const animelist = animes.slice(0, 10).map(anime => `${anime.name} [S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]`).join('\n')
 
         const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
         const buttons = animes.map(anime => [Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}_${ctx.from.id.toString()}`)])
+
+        buttons.push([
+            Markup.button.callback('⏭', `myanime_2_${ctx.from.id.toString()}`, animes.length < 11)
+        ])
 
         buttons.push([
             Markup.button.callback('💾 Export .txt 💾', `txt_${ctx.from.id.toString()}`),
