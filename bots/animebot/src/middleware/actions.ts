@@ -181,7 +181,7 @@ actions.action(/myanime_\d+_\d+/i, async ctx => {
                 skip: skip
             })
 
-            const animelist = animes.map(anime => `${anime.name} [S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]`).join('\n')
+            const animelist = animes.map(anime => `<i>${anime.name}</i> <b>[S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]</b>`).join('\n')
 
             const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 

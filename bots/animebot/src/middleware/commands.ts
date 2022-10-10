@@ -25,7 +25,7 @@ commands.command(['myanime', 'myanimes'], async (ctx) => {
     })
 
     if (animes.length > 0) {
-        const animelist = animes.slice(0, 10).map(anime => `${anime.name} [S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]`).join('\n')
+        const animelist = animes.slice(0, 10).map(anime => `<i>${anime.name}</i> <b>[S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]</b>`).join('\n')
 
         const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
