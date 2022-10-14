@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "nx run-many --target=build --all",
-    "prisma": "nx run-many --target=prisma --projects=banbot,animebot"
+    "prisma": "nx run-many --target=prisma --projects=animebot"
   },
   "keywords": [],
   "author": "",
