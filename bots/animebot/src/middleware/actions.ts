@@ -14,9 +14,11 @@ actions.action(/animeInfo_\d+_\d+/i, async ctx => {
         if (animeId && userId) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
-                ctx.answerCbQuery('This is not your list')
+                await ctx.answerCbQuery('This is not your list')
                 return
             }
+
+            await ctx.answerCbQuery()
 
             const anime = await prisma.anime.findUnique({
                 where: {
@@ -54,9 +56,11 @@ actions.action(/(season|episode)(Minus|Plus)_\d+_\d+/i, async ctx => {
         if (animeId && userId) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
-                ctx.answerCbQuery('This is not your anime')
+                await ctx.answerCbQuery('This is not your anime')
                 return
             }
+
+            await ctx.answerCbQuery()
 
             let anime: Anime | null
             if (isSeason && isMinus) {
@@ -137,6 +141,7 @@ actions.action(/(season|episode)Alert/i, ctx => {
 })
 
 actions.action(/txt_\d+/, async ctx => {
+    await ctx.answerCbQuery()
     const userId = ctx.callbackQuery.data?.replace(/txt_/i, '')
     const fileName = `${userId}.txt`
 
