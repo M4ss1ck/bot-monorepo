@@ -1,4 +1,5 @@
 import { Composer, Markup } from "telegraf"
+import axios from "axios"
 import { prisma } from "../db/prisma.js"
 
 import { padTo2Digits } from "../utils/index.js"
@@ -99,6 +100,77 @@ commands.command('save', async ctx => {
         } catch (error) {
             console.log(error)
         }
+    }
+})
+
+commands.command('import', async ctx => {
+    if (
+        ctx.message.reply_to_message
+        && 'document' in ctx.message.reply_to_message
+        && ctx.message.reply_to_message.document.mime_type === 'text/plain'
+    ) {
+        try {
+            const fileId = ctx.message.reply_to_message.document.file_id
+            const { href } = await ctx.telegram.getFileLink(fileId)
+            const { data } = await axios(href)
+            // console.log(data)
+            const linesArray: string = data.split('\n')
+            const regex = /.+ (\[)?S\d{2,}E\d{2,}(\])?(.+)?/i
+            let recordsCount = 0
+            for (const line of linesArray) {
+                if (!regex.test(line))
+                    return
+
+                const parts = line.split(/(\[)?S\d{2,}E\d{2,}(\])?/)
+                const name = parts[0].trim()
+                const note = parts.pop()?.trim() ?? ''
+                const season = parseInt(line.match(/S(\d+)/i)?.[1] ?? '1')
+                const episode = parseInt(line.match(/E(\d+)/i)?.[1] ?? '1')
+                // console.log(name, note, season, episode)
+
+                recordsCount++
+                await prisma.anime
+                    .upsert({
+                        where: {
+                            name_userId: {
+                                name: name,
+                                userId: ctx.from.id.toString()
+                            }
+                        },
+                        create: {
+                            name: name,
+                            season: season,
+                            episode: episode,
+                            note,
+                            user: {
+                                connectOrCreate: {
+                                    where: {
+                                        id: ctx.from.id.toString(),
+                                    },
+                                    create: {
+                                        id: ctx.from.id.toString(),
+                                    }
+                                }
+                            }
+                        },
+                        update: {
+                            season: season,
+                            episode: episode,
+                            note,
+                        }
+                    })
+                    .then(() => console.log(`${name} was read`))
+                    .catch((e) => {
+                        console.log(e)
+                        ctx.reply('Error creating/updating that record')
+                    })
+            }
+            ctx.replyWithHTML(`${recordsCount} records were created, updated or ignored`)
+        } catch (error) {
+            console.log('Failed to import anime list')
+            console.log(error)
+        }
+
     }
 })
 
