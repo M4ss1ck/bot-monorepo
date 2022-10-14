@@ -23,6 +23,7 @@ importers:
       '@prisma/client': ^4.3.1
       '@types/node': ^18.7.18
       anilist-service: workspace:*
+      axios: ^1.1.2
       dotenv: ^10.0.0
       prisma: ^4.3.1
       telegraf: ^4.8.1
@@ -30,6 +31,7 @@ importers:
     dependencies:
       '@prisma/client': 4.4.0_prisma@4.4.0
       anilist-service: link:../../packages/anilist-service
+      axios: 1.1.2
       dotenv: 10.0.0
       telegraf: 4.10.0
     devDependencies:
