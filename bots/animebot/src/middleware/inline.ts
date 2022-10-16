@@ -23,7 +23,7 @@ inline.on('inline_query', async (ctx) => {
         [
             Markup.button.callback(
                 'Search character in AniList',
-                `AnimPage1-${query}`,
+                `CharPage1-${query}`,
             ),
         ],
         [
