@@ -1,4 +1,5 @@
 import { Telegraf } from 'telegraf'
+import { logger } from './logger/index.js'
 import anime from './middleware/anime.js'
 import commands from './middleware/commands.js'
 // import users from './middleware/createUsers.js'
@@ -16,7 +17,7 @@ bot
 
 const commandList = await bot.telegram
     .getMyCommands()
-    .catch((e) => console.log(e));
+    .catch((e) => logger.error(e));
 
 if (commandList && !commandList.some((command) => command.command === "myanime")) {
     bot.telegram.setMyCommands([
@@ -43,12 +44,12 @@ if (commandList && !commandList.some((command) => command.command === "myanime")
         }
     ]);
 } else {
-    console.log("No need to update commands");
+    logger.info("No need to update commands");
 }
 
 // Iniciar bot
 bot.launch()
-console.log('BOT INICIADO')
+logger.success('BOT INICIADO')
 
 // Enable graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'))
