@@ -4,7 +4,7 @@ import anime from './middleware/anime.js'
 import commands from './middleware/commands.js'
 // import users from './middleware/createUsers.js'
 import actions from './middleware/actions.js'
-// import inline from './middleware/inline.js'
+import inline from './middleware/inline.js'
 
 const bot = new Telegraf(process.env.BOT_TOKEN ?? '')
 
@@ -13,7 +13,7 @@ bot
     .use(anime)
     .use(commands)
     .use(actions)
-// .use(inline)
+    .use(inline)
 
 const commandList = await bot.telegram
     .getMyCommands()
