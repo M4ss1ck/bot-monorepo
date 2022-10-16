@@ -171,7 +171,6 @@ actions.action(/myanime_\d+_\d+/i, async ctx => {
         if (page && userId) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
-                console.log(userId, ctx.callbackQuery.from.id.toString())
                 ctx.answerCbQuery('This is not your anime')
                 return
             }

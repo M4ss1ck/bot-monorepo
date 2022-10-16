@@ -25,7 +25,6 @@ anime.command('anime', async (ctx) => {
                 Markup.button.callback('⏭', `AnimPage${2}-${search}`, total / perPage <= 1),
             ])
 
-            // console.log(total, perPage, total / perPage > 1)
             const keyboard = Markup.inlineKeyboard(buttons)
             const text = `Resultados para <b>${search}</b>`
 
@@ -39,9 +38,7 @@ anime.command('anime', async (ctx) => {
 
 anime.action(/AnimPage\d+-/i, async (ctx) => {
     const pageString = ctx.callbackQuery.data?.match(/AnimPage(\d+)/i)?.[1]
-    // console.log(ctx.callbackQuery.data?.match(/AnimPage(\d+)/i))
     const page = parseInt(pageString ?? '1')
-    console.log('pagina actual ', page)
     const search = ctx.callbackQuery.data?.replace(/AnimPage\d+-/i, '')
     if (search && search.length > 2) {
         // buscar en AniList
