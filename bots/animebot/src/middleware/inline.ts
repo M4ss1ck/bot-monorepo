@@ -1,15 +1,16 @@
 import { Composer, Markup } from 'telegraf'
-import { logger } from '../logger'
+import { logger } from '../logger/index.js'
 
 const inline = new Composer()
 
 inline.on('inline_query', async (ctx) => {
     const query = ctx.inlineQuery.query
+    const userId = ctx.inlineQuery.from.id
     const response = [
         {
             title: `Search ${query}`,
             description: 'You can choose between internal DB or AniList API',
-            message_text: `Searching ${query}`,
+            message_text: `Searching "${query}"`,
         },
     ]
     const markup = Markup.inlineKeyboard([
@@ -23,6 +24,18 @@ inline.on('inline_query', async (ctx) => {
             Markup.button.callback(
                 'Search character in AniList',
                 `AnimPage1-${query}`,
+            ),
+        ],
+        [
+            Markup.button.callback(
+                'Search in my anime list',
+                `AnimPage1-${query}`,
+            ),
+        ],
+        [
+            Markup.button.callback(
+                'Show full list',
+                `myanime_1_${userId}`,
             ),
         ],
     ])
