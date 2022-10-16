@@ -210,4 +210,49 @@ actions.action(/myanime_\d+_\d+/i, async ctx => {
     }
 })
 
+actions.action(/Local_\d+_\d+_.+/i, async ctx => {
+    if (ctx.callbackQuery.data) {
+        const [page, userId, query] = ctx.callbackQuery.data.replace(/Local_/i, '').split('_')
+        if (page && userId && query) {
+            // check if it's the right user
+            if (ctx.callbackQuery.from.id.toString() !== userId) {
+                ctx.answerCbQuery('This is not your anime')
+                return
+            }
+
+            const skip = (parseInt(page) - 1) * 10
+
+            const animes = await prisma.anime.findMany({
+                where: {
+                    userId: userId,
+                    name: {
+                        contains: query
+                    },
+                },
+                take: 10,
+                skip: skip
+            })
+
+            const animelist = animes.map(anime => `<i>${anime.name}</i> <b>[S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]</b>`).join('\n')
+
+            const text = `<b>Anime stored for you:</b>\n\n${animelist}`
+
+            const buttons = animes.map(anime => [Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}_${userId}`)])
+
+            buttons.push([
+                Markup.button.callback('⏮', `myanime_${parseInt(page) - 1}_${userId}`, parseInt(page) < 2),
+                Markup.button.callback('⏭', `myanime_${parseInt(page) + 1}_${userId}`, animes.length < 10)
+            ])
+
+            buttons.push([
+                Markup.button.callback('💾 Export .txt 💾', `txt_${userId}`, !!ctx.callbackQuery),
+            ])
+
+            const keyboard = Markup.inlineKeyboard(buttons)
+
+            ctx.editMessageText(text, { ...keyboard, parse_mode: 'HTML' })
+        }
+    }
+})
+
 export default actions

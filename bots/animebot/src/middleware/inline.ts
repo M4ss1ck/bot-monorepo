@@ -29,7 +29,7 @@ inline.on('inline_query', async (ctx) => {
         [
             Markup.button.callback(
                 'Search in my anime list',
-                `AnimPage1-${query}`,
+                `Local_1_${userId}_${query}`,
             ),
         ],
         [
