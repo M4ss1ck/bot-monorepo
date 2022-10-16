@@ -197,7 +197,7 @@ actions.action(/myanime_\d+_\d+/i, async ctx => {
             ])
 
             buttons.push([
-                Markup.button.callback('💾 Export .txt 💾', `txt_${userId}`),
+                Markup.button.callback('💾 Export .txt 💾', `txt_${userId}`, !!ctx.callbackQuery),
             ])
 
             const keyboard = Markup.inlineKeyboard(buttons)
