@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import type { SpecificCharacter, AnimePage, SpecificAnime, CharacterPage } from './types'
+
 export const ANILIST_URL = 'https://graphql.anilist.co'
 
 async function genericQuery(query: string, variables = {}) {
@@ -21,20 +23,20 @@ async function getAnimes(search: string, page = 1) {
   const query = `
             query ($page: Int, $perPage: Int, $search: String) {
                 Page(page: $page, perPage: $perPage) {
-                pageInfo {
-                    total
-                    perPage
-                }
-                media(search: $search, type: ANIME, sort: FAVOURITES_DESC) {
-                    id
-                    title {
-                    romaji
-                    english
-                    native
-                    }
-                    type
-                    genres
-                }
+                  pageInfo {
+                      total
+                      perPage
+                  }
+                  media(search: $search, type: ANIME, sort: FAVOURITES_DESC) {
+                      id
+                      title {
+                      romaji
+                      english
+                      native
+                      }
+                      type
+                      genres
+                  }
                 }
             }
    `
@@ -45,7 +47,7 @@ async function getAnimes(search: string, page = 1) {
     perPage: 5,
   }
 
-  const animes = await genericQuery(query, variables)
+  const animes: AnimePage = await genericQuery(query, variables)
   return animes
 }
 
@@ -53,20 +55,25 @@ async function getAnime(id: number) {
   const query = `
         query ($id: Int) { # Define which variables will be used in the query (id)
             Media (id: $id, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)
-            id
-            title {
-                romaji
-                english
-                native
-            }
-            description (asHtml: false)
-            seasonYear
-            episodes
-            coverImage {
-                extraLarge
-                large
-                medium
-                color
+              id
+              hashtag
+              nextAiringEpisode {
+                airingAt
+                episode
+              }
+              title {
+                  romaji
+                  english
+                  native
+              }
+              description (asHtml: false)
+              seasonYear
+              episodes
+              coverImage {
+                  extraLarge
+                  large
+                  medium
+                  color
               }
             }
         }
@@ -75,7 +82,7 @@ async function getAnime(id: number) {
     id,
   }
 
-  const anime = await genericQuery(query, variables)
+  const anime: SpecificAnime = await genericQuery(query, variables)
   return anime
 }
 
@@ -122,7 +129,7 @@ async function getCharacters(search: string, page = 1) {
     perPage: 10,
   }
 
-  const characters = await genericQuery(query, variables)
+  const characters: CharacterPage = await genericQuery(query, variables)
   return characters
 }
 
@@ -168,7 +175,7 @@ async function getIsBirthdayCharacters(page = 1) {
     perPage: 10,
   }
 
-  const bdChar = await genericQuery(query, variables)
+  const bdChar: CharacterPage = await genericQuery(query, variables)
   return bdChar
 }
 
@@ -205,7 +212,7 @@ async function getCharacter(id: number) {
     id,
   }
 
-  const character = await genericQuery(query, variables)
+  const character: SpecificCharacter = await genericQuery(query, variables)
   return character
 }
 
