@@ -1,8 +1,6 @@
 import { Composer, Markup } from 'telegraf'
 import { logger } from '../logger/index.js'
 
-import type { Anime, AnimeFull, Character } from '../types'
-
 import { getAnime, getAnimes, getCharacter, getCharacters, getIsBirthdayCharacters } from 'anilist-service'
 
 // const { getAnime, getAnimes, getCharacter, getCharacters, getIsBirthdayCharacters } = anilist
@@ -15,7 +13,7 @@ anime.command('anime', async (ctx) => {
         // buscar en AniList
         try {
             const results = await getAnimes(search)
-            const media = results.Page?.media as Anime[]
+            const media = results.Page?.media
             const total = results.Page?.pageInfo?.total as number ?? 1
             const perPage = results.Page?.pageInfo?.perPage as number ?? 5
             if (media && media.length > 0) {
@@ -49,7 +47,7 @@ anime.action(/AnimPage\d+-/i, async (ctx) => {
         // buscar en AniList
         try {
             const results = await getAnimes(search, page)
-            const media = results.Page?.media as Anime[]
+            const media = results.Page?.media
             const total = results.Page?.pageInfo?.total as number ?? 1
             const perPage = results.Page?.pageInfo?.perPage as number ?? 5
             if (media && media.length > 0) {
@@ -82,7 +80,7 @@ anime.action(/getAnime/, async (ctx) => {
         // buscar en AniList
         try {
             const results = await getAnime(animeId)
-            const media = results.Media as AnimeFull
+            const media = results.Media
             if (media) {
                 const caption = `<b>${media.title.romaji ?? 'Title'}</b> (${media.id})
       Year: ${media.seasonYear ?? 'n/a'}  Episodes: ${media.episodes ?? 'n/a'}
@@ -110,7 +108,7 @@ anime.action(/getAnime/, async (ctx) => {
 anime.command('animebd', async (ctx) => {
     try {
         const results = await getIsBirthdayCharacters()
-        const characters = results.Page?.characters as Character[]
+        const characters = results.Page?.characters
 
         if (characters && characters.length > 0) {
             const buttons = []
@@ -132,7 +130,7 @@ anime.command('character', async (ctx) => {
     if (search.length > 2) {
         try {
             const results = await getCharacters(search)
-            const characters = results.Page?.characters as Character[]
+            const characters = results.Page?.characters
             const total = results.Page?.pageInfo?.total as number ?? 1
             const perPage = results.Page?.pageInfo?.perPage as number ?? 5
 
@@ -164,7 +162,7 @@ anime.action(/CharPage\d+-/i, async (ctx) => {
     if (search && search.length > 2) {
         try {
             const results = await getCharacters(search, page)
-            const characters = results.Page?.characters as Character[]
+            const characters = results.Page?.characters
             const total = results.Page?.pageInfo?.total as number ?? 1
             const perPage = results.Page?.pageInfo?.perPage as number ?? 5
 
@@ -198,7 +196,7 @@ anime.action(/getCharacter/, async (ctx) => {
         // buscar en AniList
         try {
             const results = await getCharacter(characterId)
-            const character = results.Character as Character
+            const character = results.Character
             if (character) {
                 const caption = `<a href="${character.siteUrl}">${character.name.full ?? 'Nombre'}</a> (${character.id})
       Age: ${character.age ?? 'n/a'}  Gender: ${character.gender ?? 'n/a'}
