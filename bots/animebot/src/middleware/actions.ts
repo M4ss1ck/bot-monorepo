@@ -200,7 +200,7 @@ actions.action(/myanime_\d+_\d+/i, async ctx => {
             ])
 
             buttons.push([
-                Markup.button.callback('💾 Export .txt 💾', `txt_${userId}`, !!ctx.callbackQuery),
+                Markup.button.callback('💾 Export .txt 💾', `txt_${userId}`, !!ctx.callbackQuery.inline_message_id),
             ])
 
             const keyboard = Markup.inlineKeyboard(buttons)
@@ -245,7 +245,7 @@ actions.action(/Local_\d+_\d+_.+/i, async ctx => {
             ])
 
             buttons.push([
-                Markup.button.callback('💾 Export .txt 💾', `txt_${userId}`, !!ctx.callbackQuery),
+                Markup.button.callback('💾 Export .txt 💾', `txt_${userId}`, !!ctx.callbackQuery.inline_message_id),
             ])
 
             const keyboard = Markup.inlineKeyboard(buttons)
