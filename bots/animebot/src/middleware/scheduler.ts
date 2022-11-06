@@ -72,7 +72,8 @@ scheduler.action(/cancel:/i, async ctx => {
 
 scheduler.action(/a_scheduler:/i, async ctx => {
     if (ctx.callbackQuery.data) {
-        const [animeId, userId, date] = ctx.callbackQuery.data.replace('a_scheduler:', '').split(':')
+        logger.info(ctx.callbackQuery.data)
+        const [animeId, date, userId] = ctx.callbackQuery.data.replace('a_scheduler:', '').split(':')
         if (animeId && userId && date) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
@@ -84,7 +85,7 @@ scheduler.action(/a_scheduler:/i, async ctx => {
 
             const anime = await getAnime(Number(animeId))
 
-            const jobId = `${animeId}:${userId}`
+            const jobId = `${animeId}:${date}:${userId}`
             // console.log(dayjs(Number(date)))
             const jobText = await scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
                 ctx.telegram.sendMessage(userId, `This is your reminder for anime ${anime.Media.title.english ?? 'n/a'}`)
@@ -105,7 +106,7 @@ scheduler.command('reminder', async ctx => {
         const [date, text] = ctx.message.text.replace(/^\/reminder(@\w+)?\s/i, '').split(' - ')
         const userId = ctx.from.id
         if (text && userId && date) {
-            const jobId = `${date}:${userId}`
+            const jobId = `custom:${date}:${userId}`
             const keyboard = Markup.inlineKeyboard([
                 Markup.button.callback('Cancel', `cancel:${jobId}`)
             ])
