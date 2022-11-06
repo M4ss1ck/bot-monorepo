@@ -22,11 +22,12 @@ scheduler.command('ping5', async ctx => {
     const keyboard = Markup.inlineKeyboard([
         Markup.button.callback('Cancel', `cancel:${id}`)
     ])
-    scheduled(id, `*/5 * * * * *`, () => {
+    const jobText = scheduled(id, `*/5 * * * * *`, () => {
         ctx
             .reply('Ping back', keyboard)
             .catch(e => logger.error(e))
     })
+    logger.info(jobText)
 })
 
 scheduler.command('tping', async ctx => {
@@ -38,11 +39,12 @@ scheduler.command('tping', async ctx => {
     ctx
         .reply(`Should ping in 15s at ${future.toString()}`, keyboard)
         .catch(e => logger.error(e))
-    scheduled(id, future.valueOf(), () => {
+    const jobText = scheduled(id, future.valueOf(), () => {
         ctx
             .reply(`Should have ping at ${future.toString()}`, keyboard)
             .catch(e => logger.error(e))
     })
+    logger.info(jobText)
 })
 
 scheduler.action(/cancel:/i, async ctx => {
@@ -74,14 +76,13 @@ scheduler.action(/a_scheduler:/i, async ctx => {
 
             const jobId = `${animeId}:${userId}`
             // console.log(dayjs(Number(date)))
-            scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
-                // search data about scheduled anime TODO:
+            const jobText = scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
                 ctx.telegram.sendMessage(userId, `This is your reminder for anime ${anime.Media.title.english ?? 'n/a'}`)
             })
 
             !ctx.callbackQuery.inline_message_id
-                ? ctx.telegram.sendMessage(userId, `You set up a reminder for anime ${anime.Media.title.english ?? 'n/a'} at ${dayjs(Number(date))}`)
-                : ctx.editMessageCaption(`You set up a reminder for anime ${anime.Media.title.english ?? 'n/a'} at ${dayjs(Number(date))}`)
+                ? ctx.telegram.sendMessage(userId, `Reminder for anime ${anime.Media.title.english ?? 'n/a'}\n${jobText}`)
+                : ctx.editMessageCaption(`Reminder for anime ${anime.Media.title.english ?? 'n/a'}\n${jobText}`)
         }
     }
 })
