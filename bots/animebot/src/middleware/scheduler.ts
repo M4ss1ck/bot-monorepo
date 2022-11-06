@@ -118,3 +118,16 @@ scheduler.command('reminder', async ctx => {
         }
     }
 })
+
+scheduler.command(['myjobs', 'myreminders'], async ctx => {
+    const userId = ctx.from.id.toString()
+    const jobs = await prisma.job.findMany({
+        where: {
+            id: {
+                endsWith: userId
+            }
+        }
+    })
+    const text = jobs.length > 0 ? `<b>Your reminders:</b>\n${jobs.map(job => `${job.text} <i>(${job.date})</i>`).join('\n')}` : 'You have no reminders currently active'
+    ctx.replyWithHTML(text)
+})
