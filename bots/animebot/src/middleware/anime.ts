@@ -93,10 +93,15 @@ ${media.nextAiringEpisode ? 'Next airing episode: ' + new Date(Math.floor(media.
 
                 const cover = media.coverImage.large
 
+                const keyboard = media.nextAiringEpisode?.airingAt ? Markup.inlineKeyboard(
+                    [Markup.button.callback('Set Reminder', `a_scheduler:${animeId}:${ctx.from?.id}:${media.nextAiringEpisode.airingAt * 1000}`)]
+                ) : {}
+
                 !ctx.callbackQuery.inline_message_id
                     ? ctx.replyWithPhoto(cover, {
                         parse_mode: 'HTML',
                         caption: `${caption.slice(0, 1020)}</i>`,
+                        ...keyboard
                     })
                     : ctx.editMessageText(`${caption.slice(0, 4090)}</i>`, { parse_mode: "HTML" })
             }
