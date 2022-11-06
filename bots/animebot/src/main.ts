@@ -5,6 +5,7 @@ import commands from './middleware/commands.js'
 // import users from './middleware/createUsers.js'
 import actions from './middleware/actions.js'
 import inline from './middleware/inline.js'
+import { scheduler } from './middleware/scheduler.js'
 
 const bot = new Telegraf(process.env.BOT_TOKEN ?? '')
 
@@ -14,6 +15,7 @@ bot
     .use(commands)
     .use(actions)
     .use(inline)
+    .use(scheduler)
 
 const commandList = await bot.telegram
     .getMyCommands()
