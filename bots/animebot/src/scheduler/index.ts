@@ -32,6 +32,5 @@ export const scheduled = async (id: string, cronExpression: string | number | Da
 }
 
 export const getScheduled = (id: string) => {
-    logger.success(`Job ${id} were going to run ${schedule.scheduledJobs[id] ? dayjs(schedule.scheduledJobs[id].nextInvocation()).fromNow() : '... actually never'}`)
     return schedule.scheduledJobs[id]
 }
