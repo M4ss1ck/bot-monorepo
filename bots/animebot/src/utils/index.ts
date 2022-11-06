@@ -41,7 +41,7 @@ export const runScheduled = async (bot: Telegraf) => {
         const [, userId] = job.id.split(':')
         const jobText = await scheduled(job.id, /^\d+$/.test(job.date) ? Number(job.date) : job.date, () => {
             bot.telegram.sendMessage(userId, job.text)
-        })
+        }, job.text)
         logger.success(jobText, '\n', job.text)
     }
 }
