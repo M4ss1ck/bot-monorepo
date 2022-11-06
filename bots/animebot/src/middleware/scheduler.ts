@@ -96,3 +96,25 @@ scheduler.action(/a_scheduler:/i, async ctx => {
         }
     }
 })
+
+/**
+ * Usage: /reminder <date or cron expression> - <text>
+ */
+scheduler.command('reminder', async ctx => {
+    if (ctx.message.text) {
+        const [date, text] = ctx.message.text.replace(/^\/reminder(@\w+)?\s/i, '').split(' - ')
+        const userId = ctx.from.id
+        if (text && userId && date) {
+            const jobId = `${date}:${userId}`
+            const keyboard = Markup.inlineKeyboard([
+                Markup.button.callback('Cancel', `cancel:${jobId}`)
+            ])
+            // console.log(dayjs(Number(date)))
+            const jobText = await scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
+                ctx.telegram.sendMessage(userId, text)
+            }, text)
+
+            ctx.telegram.sendMessage(userId, `${text}\n${jobText}`, keyboard)
+        }
+    }
+})
