@@ -6,6 +6,7 @@ import commands from './middleware/commands.js'
 import actions from './middleware/actions.js'
 import inline from './middleware/inline.js'
 import { scheduler } from './middleware/scheduler.js'
+import { runScheduled } from './utils/index.js'
 
 const bot = new Telegraf(process.env.BOT_TOKEN ?? '')
 
@@ -52,6 +53,8 @@ if (commandList && !commandList.some((command) => command.command === "myanime")
 // Iniciar bot
 bot.launch()
 logger.success('BOT INICIADO')
+
+await runScheduled(bot)
 
 // Enable graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'))
