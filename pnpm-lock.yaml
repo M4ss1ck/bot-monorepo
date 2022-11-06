@@ -22,11 +22,11 @@ importers:
     specifiers:
       '@prisma/client': ^4.3.1
       '@types/node': ^18.7.18
-      '@types/node-cron': ^3.0.4
       '@types/node-schedule': ^2.1.0
       anilist-service: workspace:*
       axios: ^1.1.2
       consola: ^2.15.3
+      dayjs: ^1.11.6
       dotenv: ^10.0.0
       node-schedule: ^2.1.0
       prisma: ^4.3.1
@@ -37,12 +37,12 @@ importers:
       anilist-service: link:../../packages/anilist-service
       axios: 1.1.2
       consola: 2.15.3
+      dayjs: 1.11.6
       dotenv: 10.0.0
       node-schedule: 2.1.0
       telegraf: 4.10.0
     devDependencies:
       '@types/node': 18.8.3
-      '@types/node-cron': 3.0.4
       '@types/node-schedule': 2.1.0
       prisma: 4.4.0
       tsc-watch: 5.0.3_typescript@4.8.4
@@ -319,10 +319,6 @@ packages:
     resolution: {integrity: sha512-W864tg/Osz1+9f4lrGTZpCSO5/z4608eUp19tbozkq2HJK6i3z1kT0H9tlADXuYIb1YYOBByU4Jsqkk75q48qA==}
     dependencies:
       '@types/unist': 2.0.6
-    dev: true
-
-  /@types/node-cron/3.0.4:
-    resolution: {integrity: sha512-A2H+uz5ry4hohYjRe5mQSE/8Dx/HGw4WZ728JxhKUZ7z8CMvRuG2tpbzGHRGQCuQzz5aCNB1iXzPZYHd4BPHvw==}
     dev: true
 
   /@types/node-schedule/2.1.0:
@@ -837,6 +833,10 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
     dev: true
+
+  /dayjs/1.11.6:
+    resolution: {integrity: sha512-zZbY5giJAinCG+7AGaw0wIhNZ6J8AhWuSXKvuc1KAyMiRsvGQWqh4L+MomvhdAYjN+lqvVCMq1I41e3YHvXkyQ==}
+    dev: false
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
