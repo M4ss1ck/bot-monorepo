@@ -78,7 +78,7 @@ scheduler.action(/a_scheduler:/i, async ctx => {
             // console.log(dayjs(Number(date)))
             const jobText = await scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
                 ctx.telegram.sendMessage(userId, `This is your reminder for anime ${anime.Media.title.english ?? 'n/a'}`)
-            })
+            }, `This is your reminder for anime ${anime.Media.title.english ?? 'n/a'}`)
 
             !ctx.callbackQuery.inline_message_id
                 ? ctx.telegram.sendMessage(userId, `Reminder for anime ${anime.Media.title.english ?? 'n/a'}\n${jobText}`)
