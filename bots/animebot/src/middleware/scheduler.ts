@@ -22,7 +22,7 @@ scheduler.command('ping5', async ctx => {
     const keyboard = Markup.inlineKeyboard([
         Markup.button.callback('Cancel', `cancel:${id}`)
     ])
-    const jobText = scheduled(id, `*/5 * * * * *`, () => {
+    const jobText = await scheduled(id, `*/5 * * * * *`, () => {
         ctx
             .reply('Ping back', keyboard)
             .catch(e => logger.error(e))
@@ -39,7 +39,7 @@ scheduler.command('tping', async ctx => {
     ctx
         .reply(`Should ping in 15s at ${future.toString()}`, keyboard)
         .catch(e => logger.error(e))
-    const jobText = scheduled(id, future.valueOf(), () => {
+    const jobText = await scheduled(id, future.valueOf(), () => {
         ctx
             .reply(`Should have ping at ${future.toString()}`, keyboard)
             .catch(e => logger.error(e))
@@ -76,7 +76,7 @@ scheduler.action(/a_scheduler:/i, async ctx => {
 
             const jobId = `${animeId}:${userId}`
             // console.log(dayjs(Number(date)))
-            const jobText = scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
+            const jobText = await scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
                 ctx.telegram.sendMessage(userId, `This is your reminder for anime ${anime.Media.title.english ?? 'n/a'}`)
             })
 
