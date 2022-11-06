@@ -1,5 +1,5 @@
 import { Composer, Markup } from "telegraf"
-// import { prisma } from "../db/prisma.js"
+import { prisma } from "../db/prisma.js"
 import { scheduled, getScheduled } from "../scheduler/index.js"
 import { logger } from "../logger/index.js"
 import { getAnime } from "anilist-service"
@@ -54,8 +54,18 @@ scheduler.action(/cancel:/i, async ctx => {
     // logger.info(job)
     if (job) {
         job.cancel()
+        await prisma.job.delete({
+            where: {
+                id: jobId
+            }
+        }).catch(() => logger.info('Couldn\'t delete job from DB'))
+
         ctx
             .reply(`Scheduled job "${jobId}" was canceled`)
+            .catch(e => logger.error(e))
+    } else {
+        ctx
+            .reply(`Error 404: Job not found`)
             .catch(e => logger.error(e))
     }
 })
