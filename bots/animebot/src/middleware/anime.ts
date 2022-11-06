@@ -1,6 +1,6 @@
 import { Composer, Markup } from 'telegraf'
 import { logger } from '../logger/index.js'
-
+import dayjs from 'dayjs'
 import { getAnime, getAnimes, getCharacter, getCharacters, getIsBirthdayCharacters } from 'anilist-service'
 
 import { convertMsToRelativeTime } from '../utils/index.js'
@@ -94,7 +94,10 @@ ${media.nextAiringEpisode ? 'Next airing episode: ' + new Date(Math.floor(media.
                 const cover = media.coverImage.large
 
                 const keyboard = media.nextAiringEpisode?.airingAt ? Markup.inlineKeyboard(
-                    [Markup.button.callback('Set Reminder', `a_scheduler:${animeId}:${ctx.from?.id}:${media.nextAiringEpisode.airingAt * 1000}`)]
+                    [
+                        [Markup.button.callback('Set Reminder (5min)', `a_scheduler:${animeId}:${dayjs(media.nextAiringEpisode.airingAt * 1000).subtract(5, 'minutes').valueOf()}:${ctx.from?.id}`)],
+                        [Markup.button.callback('Set Reminder (30min)', `a_scheduler:${animeId}:${dayjs(media.nextAiringEpisode.airingAt * 1000).subtract(30, 'minutes').valueOf()}:${ctx.from?.id}`)]
+                    ]
                 ) : {}
 
                 !ctx.callbackQuery.inline_message_id
