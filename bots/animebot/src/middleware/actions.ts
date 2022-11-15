@@ -128,6 +128,9 @@ actions.action(/(season|episode)(Minus|Plus)_\d+_\d+/i, async ctx => {
                 Markup.button.callback('➖', `episodeMinus_${animeId}_${userId}`),
                 Markup.button.callback('➕', `episodePlus_${animeId}_${userId}`)
             ])
+            buttons.push([
+                Markup.button.callback('🔙 Full list', `myanime_1_${userId}`)
+            ])
 
             const keyboard = Markup.inlineKeyboard(buttons)
 
