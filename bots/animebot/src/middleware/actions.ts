@@ -1,6 +1,7 @@
 import { Composer, Markup } from "telegraf"
 import { prisma } from "../db/prisma.js"
 import { Anime } from "@prisma/client"
+import { logger } from "../logger/index.js"
 
 import * as fs from 'fs/promises'
 
@@ -14,11 +15,11 @@ actions.action(/animeInfo_\d+_\d+/i, async ctx => {
         if (animeId && userId) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
-                await ctx.answerCbQuery('This is not your list')
+                await ctx.answerCbQuery('This is not your list').catch(e => logger.error(e))
                 return
             }
 
-            await ctx.answerCbQuery()
+            await ctx.answerCbQuery().catch(e => logger.error(e))
 
             const anime = await prisma.anime.findUnique({
                 where: {
@@ -59,11 +60,11 @@ actions.action(/(season|episode)(Minus|Plus)_\d+_\d+/i, async ctx => {
         if (animeId && userId) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
-                await ctx.answerCbQuery('This is not your anime')
+                await ctx.answerCbQuery('This is not your anime').catch(e => logger.error(e))
                 return
             }
 
-            await ctx.answerCbQuery()
+            await ctx.answerCbQuery().catch(e => logger.error(e))
 
             let anime: Anime | null
             if (isSeason && isMinus) {
@@ -140,16 +141,18 @@ actions.action(/(season|episode)(Minus|Plus)_\d+_\d+/i, async ctx => {
 
 actions.action(/(season|episode)Alert/i, ctx => {
     const type = /season/i.test(ctx.callbackQuery.data ?? '') ? 'season' : 'episode'
-    ctx.answerCbQuery(`Use the ➖ and ➕ buttons to modify ${type}`, { show_alert: true })
+    ctx
+        .answerCbQuery(`Use the ➖ and ➕ buttons to modify ${type}`, { show_alert: true })
+        .catch(e => logger.error(e))
 })
 
 actions.action(/txt_\d+/, async ctx => {
-    await ctx.answerCbQuery()
+    await ctx.answerCbQuery().catch(e => logger.error(e))
     const userId = ctx.callbackQuery.data?.replace(/txt_/i, '')
     const fileName = `${userId}.txt`
 
     if (userId !== ctx.callbackQuery.from.id.toString()) {
-        ctx.answerCbQuery('This is not your list')
+        ctx.answerCbQuery('This is not your list').catch(e => logger.error(e))
     }
     else {
         const animes = await prisma.anime.findMany({
@@ -174,7 +177,7 @@ actions.action(/myanime_\d+_\d+/i, async ctx => {
         if (page && userId) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
-                ctx.answerCbQuery('This is not your anime')
+                ctx.answerCbQuery('This is not your anime').catch(e => logger.error(e))
                 return
             }
 
@@ -216,7 +219,7 @@ actions.action(/Local_\d+_\d+_.+/i, async ctx => {
         if (page && userId && query) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
-                ctx.answerCbQuery('This is not your anime')
+                ctx.answerCbQuery('This is not your anime').catch(e => logger.error(e))
                 return
             }
 

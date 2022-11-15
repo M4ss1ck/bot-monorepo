@@ -48,7 +48,7 @@ scheduler.command('tping', async ctx => {
 })
 
 scheduler.action(/cancel:/i, async ctx => {
-    ctx.answerCbQuery()
+    await ctx.answerCbQuery().catch(e => logger.error(e))
     const jobId = ctx.callbackQuery.data?.replace('cancel:', '') ?? ''
     const job = getScheduled(jobId)
     // logger.info(job)
@@ -76,11 +76,11 @@ scheduler.action(/a_scheduler:/i, async ctx => {
         if (animeId && userId && date) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
-                await ctx.answerCbQuery('This is not your list')
+                await ctx.answerCbQuery('This is not your list').catch(e => logger.error(e))
                 return
             }
 
-            await ctx.answerCbQuery()
+            await ctx.answerCbQuery().catch(e => logger.error(e))
 
             const anime = await getAnime(Number(animeId))
 
