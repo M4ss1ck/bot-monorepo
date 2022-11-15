@@ -14,7 +14,7 @@ export const scheduled = async (id: string, cronExpression: string | number | Da
     } else {
         let newjob: schedule.Job
         // check if cronExpression is a date in the future
-        if (((typeof cronExpression === 'string' && /^\d+$/g.test(cronExpression)) || typeof cronExpression !== 'string') && dayjs(cronExpression).isAfter(dayjs())) {
+        if (((typeof cronExpression === 'string' && /^\d+$/g.test(cronExpression)) || typeof cronExpression !== 'string') && dayjs(Number(cronExpression)).isAfter(dayjs())) {
             // dayjs() could check that it's a date in the future
             newjob = schedule.scheduleJob(id, cronExpression, func)
             jobText = `Job ${id} will run ${dayjs(newjob.nextInvocation()).fromNow()}`
