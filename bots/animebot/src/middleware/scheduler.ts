@@ -86,9 +86,13 @@ scheduler.action(/a_scheduler:/i, async ctx => {
             const anime = await getAnime(Number(animeId))
 
             const jobId = `${animeId}:${date}:${userId}`
-            // console.log(dayjs(Number(date)))
+
+            const keyboard = Markup.inlineKeyboard([
+                Markup.button.callback('Repeat next week', `a_scheduler:${animeId}:${dayjs(date).add(7, 'days').valueOf()}:${userId}`)
+            ])
+
             const jobText = await scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
-                ctx.telegram.sendMessage(userId, `This is your reminder for anime ${anime.Media.title.english ?? 'n/a'}`)
+                ctx.telegram.sendMessage(userId, `This is your reminder for anime ${anime.Media.title.english ?? 'n/a'}`, keyboard)
             }, `This is your reminder for anime ${anime.Media.title.english ?? 'n/a'}`)
 
             !ctx.callbackQuery.inline_message_id
