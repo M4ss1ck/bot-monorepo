@@ -1,3 +1,14 @@
-import consola from "consola";
+import pkg from 'signale'
+const { Signale } = pkg
 
-export const logger = consola.withTag('animebot')
+const options = {
+    logLevel: 'info',
+}
+
+export const logger = new Signale(options)
+
+logger.config({
+    displayFilename: true,
+    displayTimestamp: true,
+    displayDate: true
+})
