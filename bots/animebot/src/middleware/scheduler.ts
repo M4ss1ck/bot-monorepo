@@ -133,6 +133,6 @@ scheduler.command(['myjobs', 'myreminders'], async ctx => {
             }
         }
     })
-    const text = jobs.length > 0 ? `<b>Your reminders:</b>\n${jobs.map(job => `${job.text} <i>(${job.date})</i>`).join('\n')}` : 'You have no reminders currently active'
+    const text = jobs.length > 0 ? `<b>Your reminders:</b>\n${jobs.map(job => `[${/^\d+$/.test(job.date) ? dayjs(Number(job.date)).fromNow() : job.date}] <i>${job.text}</i>`).join('\n')}` : 'You have no reminders currently active'
     ctx.replyWithHTML(text)
 })
