@@ -7,17 +7,36 @@ import relativeTime from 'dayjs/plugin/relativeTime.js'
 dayjs.extend(relativeTime)
 
 export const scheduled = async (id: string, cronExpression: string | number | Date, func: () => void, text?: string) => {
-    logger.info('adding new scheduled task\n', cronExpression)
     let jobText: string
     const job = getScheduled(id)
     if (job) {
         jobText = 'Job is already scheduled'
     } else {
-        const newjob = schedule.scheduleJob(id, cronExpression, func)
-        newjob && logger.success(`Job ${id} will run ${dayjs(newjob.nextInvocation()).fromNow()}`)
-        jobText = newjob ? `Job ${id} will run ${dayjs(newjob.nextInvocation()).fromNow()}` : 'Job failed for unknown reasons. Developer bad'
-
-        logger.info('Check if date is at least a day in a future or a cron expression to store job in db\n', dayjs(cronExpression).isAfter(dayjs().add(1, 'd')))
+        let newjob: schedule.Job
+        // check if cronExpression is a date in the future
+        if (((typeof cronExpression === 'string' && /^\d+$/g.test(cronExpression)) || typeof cronExpression !== 'string') && dayjs(cronExpression).isAfter(dayjs())) {
+            // dayjs() could check that it's a date in the future
+            newjob = schedule.scheduleJob(id, cronExpression, func)
+            jobText = `Job ${id} will run ${dayjs(newjob.nextInvocation()).fromNow()}`
+        } else {
+            // it is invalid or cron expr
+            if ((typeof cronExpression === 'string' && /^\d+$/g.test(cronExpression)) || typeof cronExpression !== 'string') {
+                // invalid date
+                jobText = `Job ${id} failed due to invalid date or cron expression.`
+                // remove from db
+                await prisma.job.delete({
+                    where: {
+                        id: id
+                    }
+                })
+                    .then(() => logger.info('Invalid job deleted from DB'))
+                    .catch((e) => logger.error(e))
+            } else {
+                // cron expr
+                newjob = schedule.scheduleJob(id, cronExpression, func)
+                jobText = `Job ${id} will run using the following rule: ${cronExpression}`
+            }
+        }
     }
     if (typeof cronExpression === 'string' || dayjs(cronExpression).isAfter(dayjs().add(1, 'd'))) {
         await prisma.job.upsert({
