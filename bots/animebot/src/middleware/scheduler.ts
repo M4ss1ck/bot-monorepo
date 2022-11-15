@@ -72,7 +72,6 @@ scheduler.action(/cancel:/i, async ctx => {
 
 scheduler.action(/a_scheduler:/i, async ctx => {
     if (ctx.callbackQuery.data) {
-        logger.info(ctx.callbackQuery.data)
         const [animeId, date, userId] = ctx.callbackQuery.data.replace('a_scheduler:', '').split(':')
         if (animeId && userId && date) {
             // check if it's the right user
@@ -133,6 +132,17 @@ scheduler.command(['myjobs', 'myreminders'], async ctx => {
             }
         }
     })
-    const text = jobs.length > 0 ? `<b>Your reminders:</b>\n${jobs.map(job => `[${/^\d+$/.test(job.date) ? dayjs(Number(job.date)).fromNow() : job.date}] <i>${job.text}</i>`).join('\n')}` : 'You have no reminders currently active'
-    ctx.replyWithHTML(text)
+    const buttons = jobs.map(job => {
+        return ([
+            Markup.button.callback(`Cancel ${job.text.replace('This is your ', '')}`, `cancel:${job.id}`)
+        ])
+    }
+    )
+    const keyboard = Markup.inlineKeyboard(buttons)
+
+    const text = jobs.length > 0
+        ? `<b>Your reminders:</b>\n${jobs.map(job => `[${/^\d+$/.test(job.date) ? dayjs(Number(job.date)).fromNow() : job.date}] <i>${job.text}</i>`).join('\n')}`
+        : 'You have no reminders currently active'
+
+    ctx.replyWithHTML(text, keyboard)
 })
