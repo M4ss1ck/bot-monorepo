@@ -23,15 +23,16 @@
     "@prisma/client": "^4.3.1",
     "anilist-service": "workspace:*",
     "axios": "^1.1.2",
-    "consola": "^2.15.3",
     "dayjs": "^1.11.6",
     "dotenv": "^10.0.0",
     "node-schedule": "^2.1.0",
+    "signale": "^1.4.0",
     "telegraf": "^4.8.1"
   },
   "devDependencies": {
     "@types/node": "^18.7.18",
     "@types/node-schedule": "^2.1.0",
+    "@types/signale": "^1.4.4",
     "prisma": "^4.3.1",
     "tsc-watch": "^5.0.3"
   }
