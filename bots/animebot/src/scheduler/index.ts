@@ -24,7 +24,7 @@ export const scheduled = async (id: string, cronExpression: string | number | Da
                 // invalid date
                 jobText = `Job ${id} failed due to invalid date or cron expression.`
                 // remove from db
-                await prisma.job.delete({
+                await prisma.job.deleteMany({
                     where: {
                         id: id
                     }
