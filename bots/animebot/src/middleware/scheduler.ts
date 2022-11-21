@@ -70,6 +70,18 @@ scheduler.action(/cancel:/i, async ctx => {
     }
 })
 
+scheduler.action(/check_date:/i, async ctx => {
+    await ctx.answerCbQuery().catch(e => logger.error(e))
+    if (ctx.callbackQuery.data) {
+        const date = ctx.callbackQuery.data.replace('check_date:', '')
+        const text = /^\d+$/.test(date)
+            ? `This job should run at ${dayjs(Number(date))} <i>(${dayjs(Number(date)).fromNow()})</i>`
+            : `This job uses no date, but a cron expression: <i>${date}</i>`
+
+        ctx.replyWithHTML(text).catch(e => logger.error(e))
+    }
+})
+
 scheduler.action(/a_scheduler:/i, async ctx => {
     if (ctx.callbackQuery.data) {
         const [animeId, date, userId] = ctx.callbackQuery.data.replace('a_scheduler:', '').split(':')
@@ -111,7 +123,8 @@ scheduler.command('reminder', async ctx => {
         if (text && userId && date) {
             const jobId = `custom:${date}:${userId}`
             const keyboard = Markup.inlineKeyboard([
-                Markup.button.callback('Cancel', `cancel:${jobId}`)
+                Markup.button.callback('Cancel', `cancel:${jobId}`),
+                Markup.button.callback('Check date', `check_date:${date}`)
             ])
             const jobText = await scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
                 ctx.telegram.sendMessage(userId, text, keyboard)
