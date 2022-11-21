@@ -113,9 +113,8 @@ scheduler.command('reminder', async ctx => {
             const keyboard = Markup.inlineKeyboard([
                 Markup.button.callback('Cancel', `cancel:${jobId}`)
             ])
-            // console.log(dayjs(Number(date)))
             const jobText = await scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
-                ctx.telegram.sendMessage(userId, text)
+                ctx.telegram.sendMessage(userId, text, keyboard)
             }, text)
 
             ctx.telegram.sendMessage(userId, `${text}\n${jobText}`, keyboard)
