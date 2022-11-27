@@ -144,7 +144,8 @@ scheduler.command(['myjobs', 'myreminders'], async ctx => {
             }
         }
     })
-    const buttons = jobs.map(job => {
+    const filteredJobs = jobs.filter(job => !/^\d+$/g.test(job.date) || dayjs(Number(job.date)).isAfter(dayjs()))
+    const buttons = filteredJobs.map(job => {
         return ([
             Markup.button.callback(`Cancel ${job.text.replace('This is your ', '')}`, `cancel:${job.id}`)
         ])
@@ -152,8 +153,8 @@ scheduler.command(['myjobs', 'myreminders'], async ctx => {
     )
     const keyboard = Markup.inlineKeyboard(buttons)
 
-    const text = jobs.length > 0
-        ? `<b>Your reminders:</b>\n${jobs.map(job => `[${/^\d+$/.test(job.date) ? dayjs(Number(job.date)).fromNow() : job.date}] <i>${job.text}</i>`).join('\n')}`
+    const text = filteredJobs.length > 0
+        ? `<b>Your reminders:</b>\n${filteredJobs.map(job => `[${/^\d+$/.test(job.date) ? dayjs(Number(job.date)).fromNow() : job.date}] <i>${job.text}</i>`).join('\n')}`
         : 'You have no reminders currently active'
 
     ctx.replyWithHTML(text, keyboard)
