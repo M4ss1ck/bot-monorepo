@@ -99,7 +99,7 @@ scheduler.action(/a_scheduler:/i, async ctx => {
             const jobId = `${animeId}:${date}:${userId}`
 
             const keyboard = Markup.inlineKeyboard([
-                Markup.button.callback('Repeat next week', `a_scheduler:${animeId}:${dayjs(date).add(7, 'days').valueOf()}:${userId}`)
+                Markup.button.callback('Repeat next week', `a_scheduler:${animeId}:${dayjs(Number(date)).add(7, 'days').valueOf()}:${userId}`)
             ])
 
             const jobText = await scheduled(jobId, /^\d+$/.test(date) ? Number(date) : date, () => {
