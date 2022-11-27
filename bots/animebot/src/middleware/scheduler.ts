@@ -12,7 +12,7 @@ export const scheduler = new Composer()
 
 scheduler.command('now', async ctx => {
     ctx
-        .reply(`${dayjs()} vs ${new Date()}`)
+        .reply(`Dayjs: ${dayjs()} (${dayjs().valueOf()})\nDate: ${new Date()} (${new Date().getTime()})`)
         .catch(e => logger.error(e))
 })
 
