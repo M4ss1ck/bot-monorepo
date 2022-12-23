@@ -1,6 +1,5 @@
 import { Composer, Markup } from "telegraf"
 import { prisma } from "../db/prisma.js"
-import { Anime } from "@prisma/client"
 import { logger } from "../logger/index.js"
 
 import * as fs from 'fs/promises'
@@ -12,7 +11,7 @@ const actions = new Composer()
 actions.action(/animeInfo_\d+_\d+(_\w+)?/i, async ctx => {
     if (ctx.callbackQuery.data) {
         const [animeId, userId, onlyAiring] = ctx.callbackQuery.data.replace(/animeInfo_/i, '').split('_')
-        logger.info('animeId, userId, onlyAiring: ', animeId, userId, onlyAiring)
+
         if (animeId && userId) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
@@ -76,55 +75,21 @@ actions.action(/(season|episode)(Minus|Plus)_\d+_\d+(_\w+)?/i, async ctx => {
 
             await ctx.answerCbQuery().catch(e => logger.error(e))
 
-            let anime: Anime | null
-            if (isSeason && isMinus) {
-                anime = await prisma.anime.update({
-                    where: {
-                        id: parseInt(animeId)
+            const seasonIncrement = !isSeason ? 0 : !isMinus ? 1 : -1
+            const episodeIncrement = isSeason ? 0 : !isMinus ? 1 : -1
+            const anime = await prisma.anime.update({
+                where: {
+                    id: parseInt(animeId)
+                },
+                data: {
+                    season: {
+                        increment: seasonIncrement
                     },
-                    data: {
-                        season: {
-                            decrement: 1
-                        }
+                    episode: {
+                        increment: episodeIncrement
                     }
-                })
-            }
-            else if (isSeason) {
-                anime = await prisma.anime.update({
-                    where: {
-                        id: parseInt(animeId)
-                    },
-                    data: {
-                        season: {
-                            increment: 1
-                        }
-                    }
-                })
-            }
-            else if (isMinus) {
-                anime = await prisma.anime.update({
-                    where: {
-                        id: parseInt(animeId)
-                    },
-                    data: {
-                        episode: {
-                            decrement: 1
-                        }
-                    }
-                })
-            }
-            else {
-                anime = await prisma.anime.update({
-                    where: {
-                        id: parseInt(animeId)
-                    },
-                    data: {
-                        episode: {
-                            increment: 1
-                        }
-                    }
-                })
-            }
+                }
+            })
 
             const buttons = []
 
@@ -317,7 +282,7 @@ actions.action(/airing_\d+_\d+/i, async ctx => {
             const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
             const buttons = animes.map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${userId}_airing`)])
-            logger.info('Buttons conditions: ', parseInt(page) < 2, animes.length < 10)
+
             buttons.push([
                 Markup.button.callback('⏮', `airing_${parseInt(page) - 1}_${userId}`, parseInt(page) < 2),
                 Markup.button.callback('⏭', `airing_${parseInt(page) + 1}_${userId}`, animes.length <= 10)
