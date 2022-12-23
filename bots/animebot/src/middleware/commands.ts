@@ -31,7 +31,7 @@ commands.command(['myanime', 'myanimes'], async (ctx) => {
 
         const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
-        const buttons = animes.slice(0, 10).map(anime => [Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}_${ctx.from.id.toString()}`)])
+        const buttons = animes.slice(0, 10).map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${ctx.from.id.toString()}`)])
 
         buttons.push([
             Markup.button.callback('⏭', `myanime_2_${ctx.from.id.toString()}`, animes.length < 11)
