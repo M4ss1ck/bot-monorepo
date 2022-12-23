@@ -198,7 +198,7 @@ actions.action(/myanime_\d+_\d+/i, async ctx => {
 
             const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
-            const buttons = animes.map(anime => [Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}_${userId}`)])
+            const buttons = animes.map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${userId}`)])
 
             buttons.push([
                 Markup.button.callback('⏮', `myanime_${parseInt(page) - 1}_${userId}`, parseInt(page) < 2),
@@ -243,7 +243,7 @@ actions.action(/Local_\d+_\d+_.+/i, async ctx => {
 
             const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
-            const buttons = animes.map(anime => [Markup.button.callback(`More info on "${anime.name}"`, `animeInfo_${anime.id}_${userId}`)])
+            const buttons = animes.map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${userId}`)])
 
             buttons.push([
                 Markup.button.callback('⏮', `myanime_${parseInt(page) - 1}_${userId}`, parseInt(page) < 2),
