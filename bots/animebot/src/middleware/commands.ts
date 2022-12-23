@@ -67,7 +67,7 @@ commands.command(['onair', 'airing', 't'], async (ctx) => {
         const buttons = animes.slice(0, 10).map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${ctx.from.id.toString()}`)])
 
         buttons.push([
-            Markup.button.callback('⏭', `myanime_2_${ctx.from.id.toString()}`, animes.length < 11)
+            Markup.button.callback('⏭', `airing_2_${ctx.from.id.toString()}`, animes.length < 11)
         ])
 
         const keyboard = Markup.inlineKeyboard(buttons)
