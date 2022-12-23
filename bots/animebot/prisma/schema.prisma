@@ -16,13 +16,14 @@ model User {
 }
 
 model Anime {
-  id      Int     @id @default(autoincrement())
+  id      Int      @id @default(autoincrement())
   name    String
   season  Int
   episode Int
+  onAir   Boolean? @default(false)
   note    String?
   userId  String
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([name, userId])
 }
