@@ -64,7 +64,7 @@ commands.command(['onair', 'airing', 't'], async (ctx) => {
 
         const text = `<b>Anime marked as 'On Air' stored for you:</b>\n\n${animelist}`
 
-        const buttons = animes.slice(0, 10).map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${ctx.from.id.toString()}`)])
+        const buttons = animes.slice(0, 10).map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${ctx.from.id.toString()}_airing`)])
 
         buttons.push([
             Markup.button.callback('⏭', `airing_2_${ctx.from.id.toString()}`, animes.length < 11)

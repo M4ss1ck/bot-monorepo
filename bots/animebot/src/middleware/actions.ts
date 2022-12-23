@@ -9,9 +9,10 @@ import { padTo2Digits } from "../utils/index.js"
 
 const actions = new Composer()
 
-actions.action(/animeInfo_\d+_\d+/i, async ctx => {
+actions.action(/animeInfo_\d+_\d+(_\w+)?/i, async ctx => {
     if (ctx.callbackQuery.data) {
-        const [animeId, userId] = ctx.callbackQuery.data.replace(/animeInfo_/i, '').split('_')
+        const [animeId, userId, onlyAiring] = ctx.callbackQuery.data.replace(/animeInfo_/i, '').split('_')
+        logger.info('animeId, userId, onlyAiring: ', animeId, userId, onlyAiring)
         if (animeId && userId) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
@@ -31,20 +32,26 @@ actions.action(/animeInfo_\d+_\d+/i, async ctx => {
 
             buttons.push([
                 Markup.button.callback('Season', `seasonAlert`),
-                Markup.button.callback('➖', `seasonMinus_${animeId}_${userId}`),
-                Markup.button.callback('➕', `seasonPlus_${animeId}_${userId}`)
+                Markup.button.callback('➖', `seasonMinus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`),
+                Markup.button.callback('➕', `seasonPlus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`)
             ])
             buttons.push([
                 Markup.button.callback('Episode', `episodeAlert`),
-                Markup.button.callback('➖', `episodeMinus_${animeId}_${userId}`),
-                Markup.button.callback('➕', `episodePlus_${animeId}_${userId}`)
+                Markup.button.callback('➖', `episodeMinus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`),
+                Markup.button.callback('➕', `episodePlus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`)
             ])
             buttons.push([
-                Markup.button.callback(`On Air: ${anime && anime.onAir ? '✅' : '❌'}`, `toggleOnAir_${animeId}_${userId}_${anime && anime.onAir ? 'off' : 'on'}`)
+                Markup.button.callback(`On Air: ${anime && anime.onAir ? '✅' : '❌'}`, `toggleOnAir_${animeId}_${userId}_${anime && anime.onAir ? 'off' : 'on'}${onlyAiring ? '_airing' : ''}`)
             ])
-            buttons.push([
-                Markup.button.callback('🔙 Full list', `myanime_1_${userId}`)
-            ])
+            if (onlyAiring) {
+                buttons.push([
+                    Markup.button.callback('🔙 Full list', `airing_1_${userId}`)
+                ])
+            } else {
+                buttons.push([
+                    Markup.button.callback('🔙 Full list', `myanime_1_${userId}`)
+                ])
+            }
 
             const keyboard = Markup.inlineKeyboard(buttons)
 
@@ -55,9 +62,9 @@ actions.action(/animeInfo_\d+_\d+/i, async ctx => {
     }
 })
 
-actions.action(/(season|episode)(Minus|Plus)_\d+_\d+/i, async ctx => {
+actions.action(/(season|episode)(Minus|Plus)_\d+_\d+(_\w+)?/i, async ctx => {
     if (ctx.callbackQuery.data) {
-        const [animeId, userId] = ctx.callbackQuery.data.replace(/(season|episode)(Minus|Plus)_/i, '').split('_')
+        const [animeId, userId, onlyAiring] = ctx.callbackQuery.data.replace(/(season|episode)(Minus|Plus)_/i, '').split('_')
         const isSeason = /season(Minus|Plus)_/i.test(ctx.callbackQuery.data ?? '')
         const isMinus = /(season|episode)Minus_/i.test(ctx.callbackQuery.data ?? '')
         if (animeId && userId) {
@@ -123,20 +130,26 @@ actions.action(/(season|episode)(Minus|Plus)_\d+_\d+/i, async ctx => {
 
             buttons.push([
                 Markup.button.callback('Season', `seasonAlert`),
-                Markup.button.callback('➖', `seasonMinus_${animeId}_${userId}`),
-                Markup.button.callback('➕', `seasonPlus_${animeId}_${userId}`)
+                Markup.button.callback('➖', `seasonMinus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`),
+                Markup.button.callback('➕', `seasonPlus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`)
             ])
             buttons.push([
                 Markup.button.callback('Episode', `episodeAlert`),
-                Markup.button.callback('➖', `episodeMinus_${animeId}_${userId}`),
-                Markup.button.callback('➕', `episodePlus_${animeId}_${userId}`)
+                Markup.button.callback('➖', `episodeMinus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`),
+                Markup.button.callback('➕', `episodePlus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`)
             ])
             buttons.push([
-                Markup.button.callback(`On Air: ${anime.onAir ? '✅' : '❌'}`, `toggleOnAir_${animeId}_${userId}_${anime.onAir ? 'off' : 'on'}`)
+                Markup.button.callback(`On Air: ${anime.onAir ? '✅' : '❌'}`, `toggleOnAir_${animeId}_${userId}_${anime.onAir ? 'off' : 'on'}${onlyAiring ? '_airing' : ''}`)
             ])
-            buttons.push([
-                Markup.button.callback('🔙 Full list', `myanime_1_${userId}`)
-            ])
+            if (onlyAiring) {
+                buttons.push([
+                    Markup.button.callback('🔙 Full list', `airing_1_${userId}`)
+                ])
+            } else {
+                buttons.push([
+                    Markup.button.callback('🔙 Full list', `myanime_1_${userId}`)
+                ])
+            }
 
             const keyboard = Markup.inlineKeyboard(buttons)
 
@@ -155,9 +168,9 @@ actions.action(/(season|episode)Alert/i, ctx => {
         .catch(e => logger.error(e))
 })
 
-actions.action(/toggleOnAir_\d+_\d+_(on|off)/i, async ctx => {
+actions.action(/toggleOnAir_\d+_\d+_(on|off)(_\w+)?/i, async ctx => {
     if (ctx.callbackQuery.data) {
-        const [animeId, userId, value] = ctx.callbackQuery.data.replace(/toggleOnAir_/i, '').split('_')
+        const [animeId, userId, value, onlyAiring] = ctx.callbackQuery.data.replace(/toggleOnAir_/i, '').split('_')
         if (animeId && userId) {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== userId) {
@@ -180,20 +193,26 @@ actions.action(/toggleOnAir_\d+_\d+_(on|off)/i, async ctx => {
 
             buttons.push([
                 Markup.button.callback('Season', `seasonAlert`),
-                Markup.button.callback('➖', `seasonMinus_${animeId}_${userId}`),
-                Markup.button.callback('➕', `seasonPlus_${animeId}_${userId}`)
+                Markup.button.callback('➖', `seasonMinus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`),
+                Markup.button.callback('➕', `seasonPlus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`)
             ])
             buttons.push([
                 Markup.button.callback('Episode', `episodeAlert`),
-                Markup.button.callback('➖', `episodeMinus_${animeId}_${userId}`),
-                Markup.button.callback('➕', `episodePlus_${animeId}_${userId}`)
+                Markup.button.callback('➖', `episodeMinus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`),
+                Markup.button.callback('➕', `episodePlus_${animeId}_${userId}${onlyAiring ? '_airing' : ''}`)
             ])
             buttons.push([
-                Markup.button.callback(`On Air: ${anime.onAir ? '✅' : '❌'}`, `toggleOnAir_${animeId}_${userId}_${anime.onAir ? 'off' : 'on'}`)
+                Markup.button.callback(`On Air: ${anime.onAir ? '✅' : '❌'}`, `toggleOnAir_${animeId}_${userId}_${anime.onAir ? 'off' : 'on'}${onlyAiring ? '_airing' : ''}`)
             ])
-            buttons.push([
-                Markup.button.callback('🔙 Full list', `myanime_1_${userId}`)
-            ])
+            if (onlyAiring) {
+                buttons.push([
+                    Markup.button.callback('🔙 Full list', `airing_1_${userId}`)
+                ])
+            } else {
+                buttons.push([
+                    Markup.button.callback('🔙 Full list', `myanime_1_${userId}`)
+                ])
+            }
 
             const keyboard = Markup.inlineKeyboard(buttons)
 
@@ -289,19 +308,19 @@ actions.action(/airing_\d+_\d+/i, async ctx => {
                     userId: userId,
                     onAir: true
                 },
-                take: 10,
+                take: 11,
                 skip: skip
             })
 
-            const animelist = animes.map(anime => `<i>${anime.name}</i> <b>[S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]</b>`).join('\n')
+            const animelist = animes.slice(0, 10).map(anime => `<i>${anime.name}</i> <b>[S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]</b>`).join('\n')
 
             const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
-            const buttons = animes.map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${userId}`)])
-
+            const buttons = animes.map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${userId}_airing`)])
+            logger.info('Buttons conditions: ', parseInt(page) < 2, animes.length < 10)
             buttons.push([
                 Markup.button.callback('⏮', `airing_${parseInt(page) - 1}_${userId}`, parseInt(page) < 2),
-                Markup.button.callback('⏭', `airing_${parseInt(page) + 1}_${userId}`, animes.length < 10)
+                Markup.button.callback('⏭', `airing_${parseInt(page) + 1}_${userId}`, animes.length <= 10)
             ])
 
             const keyboard = Markup.inlineKeyboard(buttons)
