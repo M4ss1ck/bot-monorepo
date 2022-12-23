@@ -50,6 +50,35 @@ commands.command(['myanime', 'myanimes'], async (ctx) => {
     }
 })
 
+commands.command(['onair', 'airing', 't'], async (ctx) => {
+    const animes = await prisma.anime.findMany({
+        where: {
+            userId: ctx.from.id.toString(),
+            onAir: true
+        },
+        take: 11
+    })
+
+    if (animes.length > 0) {
+        const animelist = animes.slice(0, 10).map(anime => `<i>${anime.name}</i> <b>[S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]</b>`).join('\n')
+
+        const text = `<b>Anime marked as 'On Air' stored for you:</b>\n\n${animelist}`
+
+        const buttons = animes.slice(0, 10).map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${ctx.from.id.toString()}`)])
+
+        buttons.push([
+            Markup.button.callback('⏭', `myanime_2_${ctx.from.id.toString()}`, animes.length < 11)
+        ])
+
+        const keyboard = Markup.inlineKeyboard(buttons)
+
+        ctx.replyWithHTML(text, keyboard)
+    }
+    else {
+        ctx.replyWithHTML('<i>No anime found on DB</i>\n\nAdd some!')
+    }
+})
+
 commands.command('save', async ctx => {
     const regex = /^\/save (\d+) (\d+) (.+)([\r\n\u0085\u2028\u2029]+(.+)?)?/i
     if (regex.test(ctx.message.text)) {
