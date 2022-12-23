@@ -40,6 +40,9 @@ actions.action(/animeInfo_\d+_\d+/i, async ctx => {
                 Markup.button.callback('➕', `episodePlus_${animeId}_${userId}`)
             ])
             buttons.push([
+                Markup.button.callback(`On Air: ${anime && anime.onAir ? '✅' : '❌'}`, `toggleOnAir_${animeId}_${userId}_${anime && anime.onAir ? 'off' : 'on'}`)
+            ])
+            buttons.push([
                 Markup.button.callback('🔙 Full list', `myanime_1_${userId}`)
             ])
 
@@ -129,6 +132,9 @@ actions.action(/(season|episode)(Minus|Plus)_\d+_\d+/i, async ctx => {
                 Markup.button.callback('➕', `episodePlus_${animeId}_${userId}`)
             ])
             buttons.push([
+                Markup.button.callback(`On Air: ${anime.onAir ? '✅' : '❌'}`, `toggleOnAir_${animeId}_${userId}_${anime.onAir ? 'off' : 'on'}`)
+            ])
+            buttons.push([
                 Markup.button.callback('🔙 Full list', `myanime_1_${userId}`)
             ])
 
@@ -147,6 +153,56 @@ actions.action(/(season|episode)Alert/i, ctx => {
     ctx
         .answerCbQuery(`Use the ➖ and ➕ buttons to modify ${type}`, { show_alert: true })
         .catch(e => logger.error(e))
+})
+
+actions.action(/toggleOnAir_\d+_\d+_(on|off)/i, async ctx => {
+    if (ctx.callbackQuery.data) {
+        const [animeId, userId, value] = ctx.callbackQuery.data.replace(/toggleOnAir_/i, '').split('_')
+        if (animeId && userId) {
+            // check if it's the right user
+            if (ctx.callbackQuery.from.id.toString() !== userId) {
+                await ctx.answerCbQuery('This is not your anime').catch(e => logger.error(e))
+                return
+            }
+
+            await ctx.answerCbQuery().catch(e => logger.error(e))
+
+            const anime = await prisma.anime.update({
+                where: {
+                    id: parseInt(animeId)
+                },
+                data: {
+                    onAir: value === 'on'
+                }
+            })
+
+            const buttons = []
+
+            buttons.push([
+                Markup.button.callback('Season', `seasonAlert`),
+                Markup.button.callback('➖', `seasonMinus_${animeId}_${userId}`),
+                Markup.button.callback('➕', `seasonPlus_${animeId}_${userId}`)
+            ])
+            buttons.push([
+                Markup.button.callback('Episode', `episodeAlert`),
+                Markup.button.callback('➖', `episodeMinus_${animeId}_${userId}`),
+                Markup.button.callback('➕', `episodePlus_${animeId}_${userId}`)
+            ])
+            buttons.push([
+                Markup.button.callback(`On Air: ${anime.onAir ? '✅' : '❌'}`, `toggleOnAir_${animeId}_${userId}_${anime.onAir ? 'off' : 'on'}`)
+            ])
+            buttons.push([
+                Markup.button.callback('🔙 Full list', `myanime_1_${userId}`)
+            ])
+
+            const keyboard = Markup.inlineKeyboard(buttons)
+
+            const text = anime ? `<b>Name:</b> ${anime.name}\n<b>Season:</b> ${anime.season}\n<b>Episode:</b> ${anime.episode}\n\n<b>Note:</b> ${anime.note && anime.note.length > 0 ? anime.note : '-'}\n\n<i>To edit, use the buttons or modify the following code:</i>\n<pre>/save ${anime.season} ${anime.episode} ${anime.name}\n${anime.note}</pre>` : '<b>Anime not found for this id</b>'
+
+            ctx.editMessageText(text, { ...keyboard, parse_mode: 'HTML' })
+        }
+    }
+
 })
 
 actions.action(/txt_\d+/, async ctx => {
