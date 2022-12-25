@@ -75,7 +75,7 @@ commands.command(['onair', 'airing', 't'], async (ctx) => {
         ctx.replyWithHTML(text, keyboard)
     }
     else {
-        ctx.replyWithHTML('<i>No anime found on DB</i>\n\nAdd some!')
+        ctx.replyWithHTML('<i>No anime marked as "On Air" found on DB</i>\n\nAdd some!')
     }
 })
 
