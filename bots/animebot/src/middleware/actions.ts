@@ -340,4 +340,52 @@ actions.action(/Local_\d+_\d+_.+/i, async ctx => {
     }
 })
 
+actions.action(/addFromMenu__\d+__\d+__\d+__.+/i, async ctx => {
+    if (ctx.callbackQuery.data) {
+        const [season, episode, user, name] = ctx.callbackQuery.data.replace(/addFromMenu__/i, '').split('__')
+        try {
+            // check if it's the right user
+            if (ctx.callbackQuery.from.id.toString() !== user) {
+                ctx.answerCbQuery('This is not your menu').catch(e => logger.error(e))
+                return
+            }
+
+
+            await prisma.anime
+                .upsert({
+                    where: {
+                        name_userId: {
+                            name: name.trim(),
+                            userId: user
+                        }
+                    },
+                    create: {
+                        name: name.trim(),
+                        season: parseInt(season),
+                        episode: parseInt(episode),
+                        note: 'Added from the menu',
+                        user: {
+                            connectOrCreate: {
+                                where: {
+                                    id: user,
+                                },
+                                create: {
+                                    id: user,
+                                }
+                            }
+                        }
+                    },
+                    update: {
+                        note: 'Updated from the menu',
+                    }
+                })
+                .then(() => ctx.answerCbQuery('Anime added/updated!').catch(logger.error))
+                .catch(logger.error)
+
+        } catch (error) {
+            logger.error(error)
+        }
+    }
+})
+
 export default actions

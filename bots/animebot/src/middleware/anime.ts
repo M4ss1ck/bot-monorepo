@@ -93,8 +93,10 @@ ${media.nextAiringEpisode ? 'Next airing episode: ' + new Date(Math.floor(media.
 
                 const cover = media.coverImage.large
 
+                const addAction = `addFromMenu__1__1__${ctx.from?.id}__${media.title.romaji ?? 'Title not available'}`.slice(0, 63)
                 const keyboard = media.nextAiringEpisode?.airingAt ? Markup.inlineKeyboard(
                     [
+                        [Markup.button.callback('Add to my list', addAction)],
                         [Markup.button.callback('Set Reminder (5min)', `a_scheduler:${animeId}:${dayjs(media.nextAiringEpisode.airingAt * 1000).subtract(5, 'minutes').valueOf()}:${ctx.from?.id}`)],
                         [Markup.button.callback('Set Reminder (30min)', `a_scheduler:${animeId}:${dayjs(media.nextAiringEpisode.airingAt * 1000).subtract(30, 'minutes').valueOf()}:${ctx.from?.id}`)]
                     ]
