@@ -5,6 +5,7 @@ import { logger } from "../logger/index.js"
 import * as fs from 'fs/promises'
 
 import { padTo2Digits } from "../utils/index.js"
+import { getAnime } from "anilist-service"
 
 const actions = new Composer()
 
@@ -340,9 +341,9 @@ actions.action(/Local_\d+_\d+_.+/i, async ctx => {
     }
 })
 
-actions.action(/addFromMenu__\d+__\d+__\d+__.+/i, async ctx => {
+actions.action(/addFromMenu__\d+__\d+__\d+__\d+/i, async ctx => {
     if (ctx.callbackQuery.data) {
-        const [season, episode, user, name] = ctx.callbackQuery.data.replace(/addFromMenu__/i, '').split('__')
+        const [season, episode, user, animeId] = ctx.callbackQuery.data.replace(/addFromMenu__/i, '').split('__')
         try {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== user) {
@@ -350,20 +351,22 @@ actions.action(/addFromMenu__\d+__\d+__\d+__.+/i, async ctx => {
                 return
             }
 
-
+            const results = await getAnime(parseInt(animeId))
+            const anime = results.Media
             await prisma.anime
                 .upsert({
                     where: {
                         name_userId: {
-                            name: name.trim(),
+                            name: anime.title.romaji.trim(),
                             userId: user
                         }
                     },
                     create: {
-                        name: name.trim(),
+                        name: anime.title.romaji.trim(),
                         season: parseInt(season),
                         episode: parseInt(episode),
                         note: 'Added from the menu',
+                        onAir: anime.nextAiringEpisode?.airingAt ? true : false,
                         user: {
                             connectOrCreate: {
                                 where: {
