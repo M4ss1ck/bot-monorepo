@@ -5,6 +5,7 @@ import commands from './middleware/commands.js'
 // import users from './middleware/createUsers.js'
 import actions from './middleware/actions.js'
 import inline from './middleware/inline.js'
+import admin from './middleware/admin.js'
 import { scheduler } from './middleware/scheduler.js'
 import { runScheduled } from './utils/index.js'
 
@@ -12,6 +13,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN ?? '')
 
 bot
     // .use(users)
+    .use(admin)
     .use(anime)
     .use(commands)
     .use(actions)
