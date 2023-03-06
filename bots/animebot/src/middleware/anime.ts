@@ -5,8 +5,6 @@ import { getAnime, getAnimes, getCharacter, getCharacters, getIsBirthdayCharacte
 
 import { convertMsToRelativeTime } from '../utils/index.js'
 
-// const { getAnime, getAnimes, getCharacter, getCharacters, getIsBirthdayCharacters } = anilist
-
 const anime = new Composer()
 
 anime.command('anime', async (ctx) => {
@@ -28,12 +26,12 @@ anime.command('anime', async (ctx) => {
                 ])
 
                 const keyboard = Markup.inlineKeyboard(buttons)
-                const text = `Resultados para <b>${search}</b>`
+                const text = `Results for <b>${search}</b>`
 
                 ctx.replyWithHTML(text, keyboard)
             }
             else {
-                ctx.replyWithHTML('No se encontraron resultados o hubo un error')
+                ctx.replyWithHTML('Error. No anime found.')
             }
         } catch (error) {
             logger.error(error)
@@ -111,7 +109,7 @@ ${media.nextAiringEpisode ? 'Next airing episode: ' + new Date(Math.floor(media.
                     : ctx.editMessageText(`${caption.slice(0, 4090)}</i>`, { parse_mode: "HTML" })
             }
             else {
-                ctx.replyWithHTML('No se encontraron resultados o hubo un error')
+                ctx.replyWithHTML('Error. No anime found.')
             }
         } catch (error) {
             logger.error(error)
@@ -127,10 +125,10 @@ anime.command('animebd', async (ctx) => {
         if (characters && characters.length > 0) {
             const buttons = []
             for (const char of characters)
-                buttons.push([Markup.button.callback(char.name.full ?? 'error con el nombre', `getCharacter${char.id}`)])
+                buttons.push([Markup.button.callback(char.name.full ?? 'full name error', `getCharacter${char.id}`)])
 
             const keyboard = Markup.inlineKeyboard(buttons)
-            const text = 'Personajes que celebran su cumpleaños hoy\n'
+            const text = 'Characters celebrating their birthday today\n'
 
             ctx.replyWithHTML(text, keyboard)
         }
@@ -151,14 +149,14 @@ anime.command('character', async (ctx) => {
             if (characters && characters.length > 0) {
                 const buttons = []
                 for (const char of characters)
-                    buttons.push([Markup.button.callback(char.name.full ?? 'error con el nombre', `getCharacter${char.id}`)])
+                    buttons.push([Markup.button.callback(char.name.full ?? 'full name error', `getCharacter${char.id}`)])
 
                 buttons.push([
                     Markup.button.callback('⏭', `CharPage${2}-${search}`, total / perPage <= 1),
                 ])
 
                 const keyboard = Markup.inlineKeyboard(buttons)
-                const text = `Resultados para <i>${search}</i>`
+                const text = `Results for <i>${search}</i>`
 
                 ctx.replyWithHTML(text, keyboard)
             }
@@ -171,7 +169,6 @@ anime.command('character', async (ctx) => {
 anime.action(/CharPage\d+-/i, async (ctx) => {
     const pageString = ctx.callbackQuery.data?.match(/CharPage(\d+)/i)?.[1]
     const page = parseInt(pageString ?? '1')
-    console.log('editando el mensaje', page)
     const search = ctx.callbackQuery.data?.replace(/CharPage\d+-/i, '')
     if (search && search.length > 2) {
         try {
@@ -183,7 +180,7 @@ anime.action(/CharPage\d+-/i, async (ctx) => {
             if (characters && characters.length > 0) {
                 const buttons = []
                 for (const char of characters)
-                    buttons.push([Markup.button.callback(char.name.full ?? 'error con el nombre', `getCharacter${char.id}`)])
+                    buttons.push([Markup.button.callback(char.name.full ?? 'full name error', `getCharacter${char.id}`)])
 
                 const showPrevBtn = page >= 2
                 const showNextBtn = total / perPage > page
@@ -227,7 +224,7 @@ anime.action(/getCharacter/, async (ctx) => {
                     : ctx.editMessageText(`${caption.slice(0, 4090)}</i>`, { parse_mode: "HTML" })
             }
             else {
-                ctx.replyWithHTML('No se encontraron resultados o hubo un error')
+                ctx.replyWithHTML('Error. No character found.').catch(logger.error)
             }
         } catch (error) {
             logger.error(error)
