@@ -16,19 +16,19 @@ scheduler.command('now', async ctx => {
         .catch(e => logger.error(e))
 })
 
-scheduler.command('ping5', async ctx => {
-    // const date = Date.now() + 5000
-    const id = `ping5:${ctx.from.id}`
-    const keyboard = Markup.inlineKeyboard([
-        Markup.button.callback('Cancel', `cancel:${id}`)
-    ])
-    const jobText = await scheduled(id, `*/5 * * * * *`, () => {
-        ctx
-            .reply('Ping back', keyboard)
-            .catch(e => logger.error(e))
-    })
-    logger.info(jobText)
-})
+// scheduler.command('ping5', async ctx => {
+//     // const date = Date.now() + 5000
+//     const id = `ping5:${ctx.from.id}`
+//     const keyboard = Markup.inlineKeyboard([
+//         Markup.button.callback('Cancel', `cancel:${id}`)
+//     ])
+//     const jobText = await scheduled(id, `*/5 * * * * *`, () => {
+//         ctx
+//             .reply('Ping back', keyboard)
+//             .catch(e => logger.error(e))
+//     })
+//     logger.info(jobText)
+// })
 
 scheduler.command('tping', async ctx => {
     const id = `tping:${ctx.from.id}`

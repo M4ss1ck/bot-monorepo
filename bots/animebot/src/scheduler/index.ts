@@ -38,7 +38,7 @@ export const scheduled = async (id: string, cronExpression: string | number | Da
             }
         }
     }
-    if (typeof cronExpression === 'string' || dayjs(cronExpression).isAfter(dayjs().add(1, 'd'))) {
+    if (typeof cronExpression === 'string' || dayjs(cronExpression).isAfter(dayjs())) {
         await prisma.job.upsert({
             create: {
                 id: id,
@@ -52,7 +52,7 @@ export const scheduled = async (id: string, cronExpression: string | number | Da
             where: {
                 id: id
             }
-        })
+        }).catch(logger.error)
     }
     return jobText
 }
