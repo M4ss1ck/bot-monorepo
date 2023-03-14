@@ -365,6 +365,7 @@ actions.action(/afm_\d+_\d+_\d+_\d+/i, async ctx => {
 
             const results = await getAnime(parseInt(animeId))
             const anime = results.Media
+            const englishTitle = anime.title.english ?? 'English title not found!'
             await prisma.anime
                 .upsert({
                     where: {
@@ -377,7 +378,7 @@ actions.action(/afm_\d+_\d+_\d+_\d+/i, async ctx => {
                         name: anime.title.romaji.trim(),
                         season: parseInt(season),
                         episode: parseInt(episode),
-                        note: 'Added from the menu',
+                        note: englishTitle + '\nAdded from the menu',
                         onAir: anime.nextAiringEpisode?.airingAt ? true : false,
                         user: {
                             connectOrCreate: {
@@ -391,7 +392,7 @@ actions.action(/afm_\d+_\d+_\d+_\d+/i, async ctx => {
                         }
                     },
                     update: {
-                        note: 'Updated from the menu',
+                        note: englishTitle + '\nUpdated from the menu',
                     }
                 })
                 .then(() => ctx.answerCbQuery('Anime added/updated!').catch(logger.error))
