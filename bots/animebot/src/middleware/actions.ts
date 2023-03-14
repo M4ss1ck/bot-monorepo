@@ -352,9 +352,10 @@ actions.action(/Local_\d+_\d+_.+/i, async ctx => {
     }
 })
 
-actions.action(/addFromMenu__\d+__\d+__\d+__\d+/i, async ctx => {
+// afm = add from menu
+actions.action(/afm_\d+_\d+_\d+_\d+/i, async ctx => {
     if (ctx.callbackQuery.data) {
-        const [season, episode, user, animeId] = ctx.callbackQuery.data.replace(/addFromMenu__/i, '').split('__')
+        const [season, episode, user, animeId] = ctx.callbackQuery.data.replace(/afm_/i, '').split('_')
         try {
             // check if it's the right user
             if (ctx.callbackQuery.from.id.toString() !== user) {

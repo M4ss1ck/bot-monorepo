@@ -92,7 +92,7 @@ ${media.nextAiringEpisode ? 'Next airing episode: ' + new Date(Math.floor(media.
 
                 const cover = media.coverImage.large
 
-                const addAction = `addFromMenu__1__1__${ctx.from?.id}__${animeId}`.slice(0, 63)
+                const addAction = `afm_1_1_${ctx.from?.id}_${animeId}`.slice(0, 63)
                 const buttons = media.nextAiringEpisode?.airingAt ? [
                     [Markup.button.callback('Add to my list', addAction)],
                     [Markup.button.callback('Set Reminder (5min)', `a_scheduler:${animeId}:${dayjs(media.nextAiringEpisode.airingAt * 1000).subtract(5, 'minutes').valueOf()}:${ctx.from?.id}`)],
