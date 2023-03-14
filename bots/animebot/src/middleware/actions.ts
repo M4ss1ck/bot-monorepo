@@ -242,19 +242,19 @@ actions.action(/myanime_\d+_\d+/i, async ctx => {
                 where: {
                     userId: userId
                 },
-                take: 10,
+                take: 11,
                 skip: skip
             })
 
-            const animelist = animes.map(anime => `<i>${anime.name}</i> <b>[S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]</b>`).join('\n')
+            const animelist = animes.slice(0, 10).map(anime => `<i>${anime.name}</i> <b>[S${padTo2Digits(anime.season)}E${padTo2Digits(anime.episode)}]</b>`).join('\n')
 
             const text = `<b>Anime stored for you:</b>\n\n${animelist}`
 
-            const buttons = animes.map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${userId}`)])
+            const buttons = animes.slice(0, 10).map(anime => [Markup.button.callback(`"${anime.name}"`, `animeInfo_${anime.id}_${userId}`)])
 
             buttons.push([
                 Markup.button.callback('⏮', `myanime_${parseInt(page) - 1}_${userId}`, parseInt(page) < 2),
-                Markup.button.callback('⏭', `myanime_${parseInt(page) + 1}_${userId}`, animes.length < 10)
+                Markup.button.callback('⏭', `myanime_${parseInt(page) + 1}_${userId}`, animes.length < 11)
             ])
 
             buttons.push([
