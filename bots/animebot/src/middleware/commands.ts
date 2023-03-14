@@ -23,7 +23,8 @@ commands.command(['myanime', 'myanimes'], async (ctx) => {
     const animes = await prisma.anime.findMany({
         where: {
             userId: ctx.from.id.toString()
-        }
+        },
+        take: 11
     })
 
     if (animes.length > 0) {
@@ -88,7 +89,7 @@ commands.command('save', async ctx => {
                 const season = matches[1]
                 const episode = matches[2]
                 const name = matches[3]
-                const note = matches[5] ?? ''
+                const note = ctx.message.text.replace(/^\/save (\d+) (\d+) (.+)([\r\n\u0085\u2028\u2029]+)?/i, '')
 
                 await prisma.anime
                     .upsert({
