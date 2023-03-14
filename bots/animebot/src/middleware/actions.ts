@@ -419,7 +419,7 @@ actions.action(/deleteAnime_/, async ctx => {
                 }
             }).then(() => {
                 ctx.answerCbQuery('Anime deleted!').catch(logger.error)
-                ctx.replyWithHTML('Your anime record was deleted.\nIf you made a mistake, just send the <code>monospaced text</code> previous message.')
+                ctx.replyWithHTML('Your anime record was deleted.\nIf you made a mistake, just send the <code>monospaced text</code> in the previous message.')
             }).catch(() => ctx.answerCbQuery().catch(logger.error))
         }
     } catch (error) {
