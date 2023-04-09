@@ -89,7 +89,7 @@ Hashtag: ${media.hashtag ?? 'n/a'}
 Year: ${media.seasonYear ?? 'n/a'}  Episodes: ${media.episodes ?? 'n/a'}
 ${media.nextAiringEpisode ? 'Next airing episode: ' + new Date(Math.floor(media.nextAiringEpisode.airingAt * 1000)).toLocaleString('en-US') + ' <i>(in ' + convertMsToRelativeTime(media.nextAiringEpisode.airingAt * 1000 - Date.now()) + ')</i> ' : '<i>no airing info available</i>'}  
       
-<i>${media.description.replace(/<br>/g, '') ?? 'description n/a'}`
+<i>${media.description.replace(/<\w+>/g, '') ?? 'description n/a'}`
 
                 const cover = media.coverImage.large
 
@@ -106,8 +106,8 @@ ${media.nextAiringEpisode ? 'Next airing episode: ' + new Date(Math.floor(media.
                         parse_mode: 'HTML',
                         caption: `${caption.slice(0, 1020)}</i>`,
                         ...keyboard
-                    })
-                    : ctx.editMessageText(`${caption.slice(0, 4090)}</i>`, { parse_mode: "HTML" })
+                    }).catch(() => ctx.reply('Parsing error. Contact bot owner.'))
+                    : ctx.editMessageText(`${caption.slice(0, 4090)}</i>`, { parse_mode: "HTML" }).catch(() => ctx.reply('Parsing error. Contact bot owner.'))
             }
             else {
                 ctx.replyWithHTML('Error. No anime found.')
